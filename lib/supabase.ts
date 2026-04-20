@@ -35,11 +35,14 @@ export async function createServerSupabaseClient() {
   )
 }
 
-// Service Role用（APIルートのみ）
+// Service Role用（APIルートのみ — クライアント・Server Componentで使用禁止）
 export function createServiceClient() {
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error('SUPABASE_SERVICE_ROLE_KEY is not defined')
+  }
   const { createClient: createAdminClient } = require('@supabase/supabase-js')
   return createAdminClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY
   )
 }
