@@ -21,14 +21,16 @@ export default function LoginPage() {
   async function handleLogin() {
     setLoading(true)
     setError(null)
-    const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) {
-      setError('メールアドレスかパスワードが違います')
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) {
+        setError('メールアドレスかパスワードが違います')
+      } else {
+        router.push('/')
+      }
+    } finally {
       setLoading(false)
-    } else {
-      router.push('/')
-      router.refresh()
     }
   }
 
