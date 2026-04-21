@@ -1,164 +1,165 @@
 import type { BossConfig } from './types'
 
 export const BOSS_CONFIGS: Record<string, BossConfig> = {
-  vocab: {
-    type: 'vocab',
-    name: '語彙・発音問題',
+  short_text: {
+    type: 'short_text',
+    name: '短い実用文（第1問）',
     section: 1,
-    points: 8,
+    points: 6,
     timeLimit: 90,
-    trick: `発音問題は「母音」だけ見る。a/e/i/o/u の読み方が違うものが正解。
-アクセント問題は「動詞は後ろ・名詞は前」のルールが多い。
-4つ中3つが同じグループ、1つだけ仲間外れ。`,
+    trick: `タイトルと設問だけ先に読む。本文は全部読まない。
+設問のキーワードが出てくる部分だけを探す。
+チラシや告知文は「日時・場所・条件」の3つを探すと答えが出ることが多い。`,
     trickSteps: [
-      '各単語の母音（a/e/i/o/u）の発音を声に出して確認',
-      'アクセント問題は動詞か名詞かで振り分ける',
-      '3つが同じグループに入る → 残りが正解',
+      '設問を先に全部読む（何を探すか確認）',
+      '本文からキーワードと同じ単語・数字を探す',
+      '本文に書いてある事実だけで選ぶ（「良さそう」に見えるだけの選択肢は罠）',
     ],
     example: {
-      en: 'A. w-o-rk  B. w-o-rd  C. w-o-man  D. w-o-rld → A/B/D は "ər" 、C は "ʊ"',
-      ja: '→ Cが仲間外れ。母音の音が違うから。',
+      en: 'Q: "What is the main purpose of this notice?" → Check the first sentence of the text.',
+      ja: '→ 最初の文が目的を述べていることがほとんど。タイトルも重要なヒント。',
     },
-    themes: ['daily_life', 'technology', 'community', 'environment'],
+    themes: ['travel', 'daily_life', 'community', 'business'],
   },
-  grammar: {
-    type: 'grammar',
-    name: '文法・語法問題',
+  survey_blog: {
+    type: 'survey_blog',
+    name: 'ブログ・アンケート（第2問）',
     section: 2,
-    points: 20,
-    timeLimit: 120,
-    trick: `空所の前後だけ見る。全文を読まない。
-パターンは3つ：①動詞の形（時制・態）②前置詞 ③接続詞・関係詞。
-空所の直前が名詞なら関係詞、動詞なら副詞、前置詞なら名詞形を選べ。`,
+    points: 12,
+    timeLimit: 150,
+    trick: `設問を先に全部読んでから本文を読む。
+ブログなら段落ごとの「テーマ文（最初の文）」だけ追う。
+アンケートなら数字・割合とコメントの対応を探す。
+筆者の意見（I think / should）と事実（数字・データ）を分けて読む。`,
     trickSteps: [
-      '空所の直前の語を見る（品詞のヒントがある）',
-      '空所の直後の語を見る（動詞か名詞か確認）',
-      '文の主語と時制を確認して形を決める',
+      '設問を先に全部読む',
+      'ブログ：各段落の最初の文だけを読む（主張がある）',
+      'アンケート：数字・割合と関連するコメントを照合する',
     ],
     example: {
-      en: '"The report ___ by the team last week." → "was written" (受動態+過去時制)',
-      ja: '→ last week → 過去、by the team → 受動態と見抜けば一発。',
+      en: '"60% of students said they enjoyed the event." → Q: What did most students think?',
+      ja: '→ 60% = "most"。数字が言い換えられることに注意。',
     },
-    themes: ['business', 'daily_life', 'technology', 'community'],
+    themes: ['technology', 'environment', 'daily_life', 'community'],
   },
-  conversation: {
-    type: 'conversation',
-    name: '会話文読解',
+  short_story: {
+    type: 'short_story',
+    name: '短編物語・時系列（第3問）',
     section: 3,
-    points: 15,
+    points: 9,
     timeLimit: 180,
-    trick: `空所の「直前の発言」と「直後の発言」だけ読む。
-会話の流れ：質問→答え、依頼→承諾/断り、感謝→反応。
-「え？本当に？」などの驚きに続く選択肢は理由か情報。`,
+    trick: `時間を表す言葉だけをマーク：yesterday / two days ago / last night / the next day / the following week。
+これを順に並べると時系列が完成する。
+「正しい順番」問題はこれだけで解ける。`,
     trickSteps: [
-      '空所の直前の発言：何を求めているか（質問/依頼/感謝）',
-      '空所の直後の発言：それへの反応は自然か確認',
-      '会話の「返し」として最も自然なものを選ぶ',
+      '時間・順序を示す単語を全てマーク',
+      '登場人物の行動を時系列で�条書きにする',
+      '設問の選択肢と時系列を照合する',
     ],
     example: {
-      en: 'A: "Could you help me with this?" B: [  ] A: "That\'s great, thank you!"',
-      ja: '→ AがThanksと言っているからBは承諾。拒否の選択肢は即除外。',
+      en: '"She met him at the festival. Two days later, she received a letter."',
+      ja: '→ "Two days later" を見つければ festival → letter の順序が決まる。',
     },
-    themes: ['daily_life', 'travel', 'community', 'business'],
+    themes: ['daily_life', 'community', 'travel', 'environment'],
   },
-  chart: {
-    type: 'chart',
-    name: '図表・グラフ読み取り',
+  essay_edit: {
+    type: 'essay_edit',
+    name: 'エッセイ添削（第4問）',
     section: 4,
     points: 12,
-    timeLimit: 210,
-    trick: `タイトルと軸のラベルだけ先に読む。グラフを全部読まない。
-設問の数字・順位・割合に関係するデータだけを探す。
-選択肢の「最大・最小・増加・減少」という言葉と図表を照合する。`,
+    timeLimit: 180,
+    trick: `先生のコメントを先に全部読む。コメントが「答えのヒント」そのもの。
+英文を直すんじゃなく、コメントの内容と選択肢をマッチングするゲームだ。
+コメントにない情報を追加する選択肢は全部罠。`,
     trickSteps: [
-      'グラフのタイトル・縦軸・横軸のラベルを確認',
-      '設問のキーワード（最も多い/増えている/減っている）を抽出',
-      '選択肢の数値・比較表現とグラフのデータを照合',
+      '先生のコメントを先に全部読む',
+      '各コメントが「何を求めているか」を1語でメモする（例：具体例・理由・対策）',
+      'そのコメントを満たす選択肢だけを選ぶ（本文は後から確認）',
     ],
     example: {
-      en: 'Q: "Which year showed the largest increase?" → Find the steepest upward slope.',
-      ja: '→ 全年のデータを読まなくていい。増加幅が一番急なところだけ見る。',
+      en: 'Comment: "Add a specific example here." → Choose the option with a concrete number or name.',
+      ja: '→ 「具体例」を求めているなら、数字や固有名詞が入っている選択肢を選ぶ。',
     },
     themes: ['technology', 'environment', 'business', 'community'],
   },
-  email: {
-    type: 'email',
-    name: 'メールを読んで答える問題',
+  multi_doc: {
+    type: 'multi_doc',
+    name: '複数文書を読む問題（第5問）',
     section: 5,
     points: 16,
     timeLimit: 240,
-    trick: `メールで読むのは2つだけ：①最後の一文（結論）②数字（日付・時間・金額）。
-この2つを見つければ答えが出る。本文を全部読もうとしない。`,
+    trick: `チラシ・フォーム・メール、どれを読むか設問で先に決める。
+設問のキーワードが出てくる文書だけを読む。
+数字（日付・料金・条件）が正解の根拠になることが多い。
+複数の文書を組み合わせないと解けない設問が必ず1つある。`,
     trickSteps: [
-      'メールの最後の1文だけ読む（そこに結論がある）',
-      '数字・日付・金額だけをさっと拾う',
-      '選択肢と照合する',
+      '設問を先に全部読む',
+      '各設問に関係する文書を特定する（チラシ？フォーム？メール？）',
+      '複数文書を組み合わせる設問を最後に読む（一番難しいので後回し）',
     ],
     example: {
-      en: '"Please reply by Friday, April 25." → Q: When is the deadline?',
-      ja: '→ 数字「April 25」を見つければ即答できる。本文全部読む必要なし。',
+      en: 'Leaflet says "open Mon-Fri". Form says "submitted on Saturday" → Q: Was the form submitted on time?',
+      ja: '→ 2つの文書を組み合わせて初めて答えが出る。',
     },
     themes: ['travel', 'business', 'daily_life', 'community'],
   },
-  story: {
-    type: 'story',
-    name: '物語・長文読解',
+  long_story: {
+    type: 'long_story',
+    name: '長編物語・読解（第6問）',
     section: 6,
-    points: 24,
-    timeLimit: 480,
-    trick: `第1段落と最終段落を先に読む。登場人物の「変化」を追う。
-感情語（worried / relieved / disappointed / surprised）を全てマークする。
-設問の答えは「感情の変化」か「行動の理由」のどちらか。`,
+    points: 12,
+    timeLimit: 300,
+    trick: `第1段落と最終段落を先に読む。登場人物の感情語（worried / relieved / disappointed / proud 等）を全てマーク。
+心情・行動の理由を問う設問の答えは、その感情語の前後に必ずある。`,
     trickSteps: [
       '第1段落：誰が・どんな状況かをつかむ',
       '最終段落：どう変わったか（解決・未解決）を確認',
       '感情・心情を表す単語をマークしながら本文を読む',
     ],
     example: {
-      en: '"She had been nervous, but now she felt relieved." → Change: nervous → relieved',
-      ja: '→ 感情の変化を問う設問はここが正解の根拠。',
+      en: '"She had been nervous, but now she felt relieved."',
+      ja: '→ 感情の変化を問う設問はここが正解の根拠。nervous → relieved の変化を確認。',
     },
     themes: ['daily_life', 'community', 'travel', 'environment'],
   },
-  multi_source: {
-    type: 'multi_source',
-    name: '複数資料の統合問題',
+  article_slides: {
+    type: 'article_slides',
+    name: '説明文＋スライド（第7問）',
     section: 7,
-    points: 30,
-    timeLimit: 540,
-    trick: `3〜4つ資料があっても設問と関係する資料は1〜2つだけ。
-設問を先に全部読んで、必要な資料だけを読む。
-「資料Aと資料Bの両方に書かれている」ことが正解になることが多い。`,
+    points: 16,
+    timeLimit: 360,
+    trick: `スライドの空欄を先に全部確認。空欄のテーマが本文の何段落目かを予測してから読む。
+筆者の主張は最初か最後の段落、具体例は中間段落にある。
+スライドと本文の「対応」を探すパズルだ。`,
     trickSteps: [
-      '設問を先に全部読む（何を聞かれているか把握）',
-      '設問のキーワードが出てくる資料だけを探す',
-      '複数資料に共通して書かれている内容が正解のポイント',
+      'スライドの空欄を先に全部読む（何を探すか確認）',
+      '各空欄に対応する本文の段落を特定する',
+      '段落の最初の文だけ読んで、空欄に合うかを確認する',
     ],
     example: {
-      en: 'Resource A says "open 9-5", Resource B says "closed on Sundays" → Q: When can you visit?',
-      ja: '→ 両方の情報を合わせて「日曜以外の9〜17時」が正解。',
+      en: 'Slide: "Benefit 1: [ 32 ]" → Find the paragraph that starts "One benefit is..."',
+      ja: '→ スライドの見出しと本文の段落テーマが対応している。',
     },
     themes: ['technology', 'environment', 'business', 'community'],
   },
-  outline: {
-    type: 'outline',
-    name: '資料を読んでまとめる問題',
+  essay_synthesis: {
+    type: 'essay_synthesis',
+    name: '意見を読んでまとめる（第8問）',
     section: 8,
     points: 17,
-    timeLimit: 360,
-    trick: `資料1の「問題」＋資料2の「解決策」→ 答えは「だからこうなる」という選択肢。
-「良さそう」に見えるけど文章に書いていない選択肢が必ず1つ混じってる。それが罠。
-文章に書いてあることだけで選べ。`,
+    timeLimit: 420,
+    trick: `ステップを飛ばさない。①意見を読む→②立場を選ぶ→③その立場を支持する意見を2つ探す→④追加資料でアウトラインを完成させる。
+アウトラインの答えは「選んだ立場の論理的帰結」。感情的に正しそうな選択肢が罠。`,
     trickSteps: [
-      '資料1の「困っていること」を1行でまとめる',
-      '資料2の「その解決方法」を1行でまとめる',
-      '「だから〜になる」という文を作る → それに一番近い選択肢を選ぶ',
+      '各意見を読んで「賛成派・反対派」をメモする（30秒）',
+      '選んだ立場を支持する意見2つの「共通点」を探す',
+      '追加資料はアウトラインの空欄に直接対応する部分だけを読む',
     ],
     example: {
-      en: 'Resource 1: Cities have too much waste. Resource 2: Monthly reports helped people reduce waste by 20%.',
-      ja: '→ 正解は「ゴミが減った」系の選択肢。「住民が幸せになった」は文章にないから罠。',
+      en: 'Step 2: "Jack and Tamara both support accepting technology in sports."',
+      ja: '→ 共通点は「技術はスポーツを向上させる」。その論理的帰結がアウトラインの答え。',
     },
-    themes: ['technology', 'environment', 'community', 'daily_life'],
+    themes: ['technology', 'environment', 'business', 'community'],
   },
 }
 
