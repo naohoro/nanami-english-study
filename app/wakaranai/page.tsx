@@ -11,8 +11,10 @@ function WakaranaiContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const bossType = searchParams.get('bossType') as BossType
+  const questionIndex = Number(searchParams.get('questionIndex') ?? '0')
   const raw = typeof window !== 'undefined' ? sessionStorage.getItem('currentProblem') : null
   const problem: GeneratedProblem | null = raw ? JSON.parse(raw) : null
+  const currentQuestion = problem?.questions[questionIndex] ?? problem?.questions[0]
 
   const [selectedCause, setSelectedCause] = useState<WakaranaiCause | null>(null)
 
@@ -33,7 +35,7 @@ function WakaranaiContent() {
         body: JSON.stringify({
           cause: selectedCause,
           passageHtml: problem.passageHtml,
-          questionText: problem.questionText,
+          questionText: currentQuestion?.questionText ?? '',
         }),
       })
       const data = await res.json()
