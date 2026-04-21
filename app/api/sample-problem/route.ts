@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid bossType' }, { status: 400 })
   }
 
-  // Read user's current adaptive difficulty (default 2)
+  // Read user's current adaptive difficulty (default 3 = standard)
   const { data: diffState } = await supabase
     .from('difficulty_state')
     .select('current_difficulty')
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     .eq('boss_type', bossType)
     .single()
 
-  const difficulty = diffState?.current_difficulty ?? 2
+  const difficulty = diffState?.current_difficulty ?? 3
 
   // Fetch all matching sample problems, pick one at random
   const { data: problems, error } = await supabase
