@@ -6,6 +6,7 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
     name: '短い実用文（第1問）',
     section: 1,
     points: 6,
+    questionCount: 2,
     timeLimit: 90,
     trick: `タイトルと設問だけ先に読む。本文は全部読まない。
 設問のキーワードが出てくる部分だけを探す。
@@ -26,6 +27,7 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
     name: 'ブログ・アンケート（第2問）',
     section: 2,
     points: 12,
+    questionCount: 4,
     timeLimit: 150,
     trick: `設問を先に全部読んでから本文を読む。
 ブログなら段落ごとの「テーマ文（最初の文）」だけ追う。
@@ -47,6 +49,7 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
     name: '短編物語・時系列（第3問）',
     section: 3,
     points: 9,
+    questionCount: 3,
     timeLimit: 180,
     trick: `時間を表す言葉だけをマーク：yesterday / two days ago / last night / the next day / the following week。
 これを順に並べると時系列が完成する。
@@ -67,6 +70,7 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
     name: 'エッセイ添削（第4問）',
     section: 4,
     points: 12,
+    questionCount: 4,
     timeLimit: 180,
     trick: `先生のコメントを先に全部読む。コメントが「答えのヒント」そのもの。
 英文を直すんじゃなく、コメントの内容と選択肢をマッチングするゲームだ。
@@ -87,6 +91,7 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
     name: '複数文書を読む問題（第5問）',
     section: 5,
     points: 16,
+    questionCount: 4,
     timeLimit: 240,
     trick: `チラシ・フォーム・メール、どれを読むか設問で先に決める。
 設問のキーワードが出てくる文書だけを読む。
@@ -108,6 +113,7 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
     name: '長編物語・読解（第6問）',
     section: 6,
     points: 12,
+    questionCount: 4,
     timeLimit: 300,
     trick: `第1段落と最終段落を先に読む。登場人物の感情語（worried / relieved / disappointed / proud 等）を全てマーク。
 心情・行動の理由を問う設問の答えは、その感情語の前後に必ずある。`,
@@ -127,6 +133,7 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
     name: '説明文＋スライド（第7問）',
     section: 7,
     points: 16,
+    questionCount: 4,
     timeLimit: 360,
     trick: `スライドの空欄を先に全部確認。空欄のテーマが本文の何段落目かを予測してから読む。
 筆者の主張は最初か最後の段落、具体例は中間段落にある。
@@ -147,6 +154,7 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
     name: '意見を読んでまとめる（第8問）',
     section: 8,
     points: 17,
+    questionCount: 4,
     timeLimit: 420,
     trick: `ステップを飛ばさない。①意見を読む→②立場を選ぶ→③その立場を支持する意見を2つ探す→④追加資料でアウトラインを完成させる。
 アウトラインの答えは「選んだ立場の論理的帰結」。感情的に正しそうな選択肢が罠。`,
