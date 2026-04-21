@@ -44,11 +44,9 @@ export async function GET(request: NextRequest) {
     theme: row.theme,
     difficulty: row.difficulty,
     mode: 'answer_first',
+    scenario: row.scenario,
     passageHtml: row.passage_html,
-    questionText: row.question_text,
-    choices: row.choices,
-    correctLabel: row.correct_label,
-    explanation: row.explanation ?? null,
+    questions: row.questions,
     trickHint: row.trick_hint ?? null,
   }
 

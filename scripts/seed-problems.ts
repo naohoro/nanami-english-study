@@ -213,12 +213,10 @@ async function seed() {
               boss_type: bossType,
               theme,
               difficulty,
+              scenario: p.scenario,
               passage_html: p.passageHtml,
-              question_text: p.questionText,
-              choices: p.choices,
-              correct_label: p.correctLabel,
-              explanation: p.explanation ?? null,
-              trick_hint: p.trickHint ?? null,
+              questions: p.questions,
+              trick_hint: p.trickHint,
             })
             if (error) {
               console.log(`DB ERROR: ${error.message}`)

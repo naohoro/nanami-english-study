@@ -14,3 +14,12 @@ body {
   background: var(--cream);
   color: #1A1A1A;
 }
+
+.font-mincho {
+  font-family: 'Hiragino Mincho Pro', 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
+}
+
+.passage-english {
+  font-family: Georgia, 'Times New Roman', serif;
+  line-height: 1.8;
+}
