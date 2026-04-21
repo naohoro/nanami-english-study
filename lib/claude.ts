@@ -127,25 +127,44 @@ function buildProblemPrompt(
     ? '"explanation": "正解の根拠を日本語で3〜4文で説明する（どこに答えがあったか、なぜ他の選択肢が違うか）"'
     : '"explanation": null'
 
+  const questionCountForType: Record<BossType, number> = {
+    short_text: 2,
+    survey_blog: 4,
+    short_story: 3,
+    essay_edit: 4,
+    multi_doc: 4,
+    long_story: 4,
+    article_slides: 4,
+    essay_synthesis: 4,
+  }
+  const qCount = questionCountForType[bossType]
+
   return `あなたは日本の共通テスト英語問題の専門家です。以下の仕様に厳密に従って問題を生成してください。
 
 テーマ：${themeMap[theme]}
 難易度：${difficultyDesc}（${difficulty}/5）
+設問数：${qCount}問（必ず${qCount}問すべて生成すること）
 ${typeInstructions[bossType]}
 
 出力は必ず以下のJSON形式のみで返してください。説明文や前置きは不要です：
 
 {
+  "scenario": "You are [状況設定の1文。例: a student looking at a notice / reading a blog about technology].",
   "passageHtml": "問題の本文HTML（<p>タグ使用可）",
-  "questionText": "設問文（日本語可）",
-  "choices": [
-    {"label": "A", "text": "選択肢A"},
-    {"label": "B", "text": "選択肢B"},
-    {"label": "C", "text": "選択肢C"},
-    {"label": "D", "text": "選択肢D"}
+  "questions": [
+    {
+      "number": 1,
+      "questionText": "設問文（日本語可）",
+      "choices": [
+        {"label": "A", "text": "選択肢A"},
+        {"label": "B", "text": "選択肢B"},
+        {"label": "C", "text": "選択肢C"},
+        {"label": "D", "text": "選択肢D"}
+      ],
+      "correctLabel": "A",
+      ${explanationInstruction}
+    }
   ],
-  "correctLabel": "A",
-  ${explanationInstruction},
   "trickHint": "この問題で使える裏技のポイントを1文で（日本語）"
 }`
 }
@@ -160,7 +179,7 @@ export async function generateProblem(params: {
 
   const message = await anthropic.messages.create({
     model: 'claude-sonnet-4-6',
-    max_tokens: 2048,
+    max_tokens: 4096,
     messages: [
       {
         role: 'user',
