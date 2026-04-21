@@ -1,12 +1,12 @@
 export type BossType =
-  | 'vocab'
-  | 'grammar'
-  | 'conversation'
-  | 'chart'
-  | 'email'
-  | 'story'
-  | 'multi_source'
-  | 'outline'
+  | 'short_text'
+  | 'survey_blog'
+  | 'short_story'
+  | 'essay_edit'
+  | 'multi_doc'
+  | 'long_story'
+  | 'article_slides'
+  | 'essay_synthesis'
 
 export type ProblemTheme =
   | 'travel'
