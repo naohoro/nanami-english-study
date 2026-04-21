@@ -57,7 +57,10 @@ function buildPrompt(bossType: string, difficulty: number, theme: string): strin
 - 必ず具体的な数字（日付・時間・金額・数量のいずれか）を含める
 - 設問：メールの内容に基づく事実確認問題（4択）
 - 正解：メールの最後の一文または数字情報から直接導ける答え
-- 誤答：本文中の別の情報と紛らわしい選択肢を含める`,
+- 誤答：本文中の別の情報と紛らわしい選択肢を含める
+
+passageHtmlの形式（必ずこの形式でメール1とメール2の両方を含めること）：
+<p><strong>Email 1</strong></p><p>From: [送信者]<br>To: [宛先]<br>Subject: [件名]</p><p>[メール1本文]</p><p><strong>Email 2</strong></p><p>From: [送信者]<br>To: [宛先]<br>Subject: [件名]</p><p>[メール2本文]</p>`,
   }
 
   return `あなたは日本の共通テスト英語問題の専門家です。以下の仕様に厳密に従って問題を生成してください。
@@ -100,10 +103,22 @@ async function generateOne(bossType: string, difficulty: number, theme: string) 
 }
 
 async function seed() {
+  const filterBossType = process.env.BOSS_TYPE ?? null
+  const bossesToRun = filterBossType
+    ? { [filterBossType]: BOSS_THEMES[filterBossType] }
+    : BOSS_THEMES
+
+  if (filterBossType) {
+    console.log(`Deleting existing records for boss_type='${filterBossType}'...`)
+    const { error } = await supabase.from('sample_problems').delete().eq('boss_type', filterBossType)
+    if (error) { console.error(`Delete failed: ${error.message}`); process.exit(1) }
+    console.log('Deleted. Starting re-seed...\n')
+  }
+
   let total = 0
   let failed = 0
 
-  for (const [bossType, themes] of Object.entries(BOSS_THEMES)) {
+  for (const [bossType, themes] of Object.entries(bossesToRun)) {
     for (const theme of themes) {
       for (let difficulty = 1; difficulty <= 5; difficulty++) {
         for (let i = 0; i < VARIANTS; i++) {

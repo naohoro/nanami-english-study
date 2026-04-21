@@ -15,6 +15,11 @@ function WakaranaiContent() {
   const problem: GeneratedProblem | null = raw ? JSON.parse(raw) : null
 
   const [selectedCause, setSelectedCause] = useState<WakaranaiCause | null>(null)
+
+  function handleSelectCause(cause: WakaranaiCause) {
+    setSelectedCause(cause)
+    setSupportMessage(null)
+  }
   const [supportMessage, setSupportMessage] = useState<string | null>(null)
   const [loadingSupport, setLoadingSupport] = useState(false)
 
@@ -52,7 +57,7 @@ function WakaranaiContent() {
         <p className="text-sm mt-1" style={{ color: '#787878' }}>理由を1つ選んでね</p>
       </div>
 
-      <CauseSelector selectedCause={selectedCause} onSelect={setSelectedCause} />
+      <CauseSelector selectedCause={selectedCause} onSelect={handleSelectCause} />
 
       {selectedCause && !supportMessage && !loadingSupport && (
         <BottomButton label="サポートを見る" onClick={handleGetSupport} />
@@ -62,7 +67,7 @@ function WakaranaiContent() {
 
       {supportMessage && (
         <div className="rounded-2xl p-4" style={{ background: '#EFF8FF', border: '1px solid #93C5FD' }}>
-          <p className="text-sm leading-relaxed" style={{ color: '#1A1A1A' }}>{supportMessage}</p>
+          <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: '#1A1A1A' }}>{supportMessage}</p>
         </div>
       )}
 
