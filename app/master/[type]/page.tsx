@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, Suspense } from 'react'
-import { useParams, useSearchParams, useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { BOSS_CONFIGS } from '@/lib/boss-data'
 import { ProblemPanel } from '@/components/boss/ProblemPanel'
 import { BottomButton } from '@/components/ui/BottomButton'
@@ -10,15 +10,12 @@ import type { BossType, GeneratedProblem } from '@/lib/types'
 
 function MasterContent() {
   const params = useParams()
-  const searchParams = useSearchParams()
   const router = useRouter()
   const bossType = params.type as BossType
   const boss = BOSS_CONFIGS[bossType]
 
-  const problemDataRaw = searchParams.get('problemData')
-  const problem: GeneratedProblem | null = problemDataRaw
-    ? JSON.parse(decodeURIComponent(problemDataRaw))
-    : null
+  const raw = typeof window !== 'undefined' ? sessionStorage.getItem('currentProblem') : null
+  const problem: GeneratedProblem | null = raw ? JSON.parse(raw) : null
 
   const [selectedLabel, setSelectedLabel] = useState<'A' | 'B' | 'C' | 'D' | null>(null)
   const [submitted, setSubmitted] = useState(false)

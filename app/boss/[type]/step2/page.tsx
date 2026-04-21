@@ -77,15 +77,13 @@ export default function Step2Page() {
   }
 
   function handleGoToMaster() {
-    router.push(
-      `/master/${bossType}?problemData=${encodeURIComponent(JSON.stringify(problem))}`
-    )
+    sessionStorage.setItem('currentProblem', JSON.stringify(problem))
+    router.push(`/master/${bossType}`)
   }
 
   function handleWakaranai() {
-    router.push(
-      `/wakaranai?bossType=${bossType}&problemData=${encodeURIComponent(JSON.stringify(problem))}`
-    )
+    sessionStorage.setItem('currentProblem', JSON.stringify(problem))
+    router.push(`/wakaranai?bossType=${bossType}`)
   }
 
   return (

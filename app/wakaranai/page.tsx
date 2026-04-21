@@ -11,10 +11,8 @@ function WakaranaiContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const bossType = searchParams.get('bossType') as BossType
-  const problemDataRaw = searchParams.get('problemData')
-  const problem: GeneratedProblem | null = problemDataRaw
-    ? JSON.parse(decodeURIComponent(problemDataRaw))
-    : null
+  const raw = typeof window !== 'undefined' ? sessionStorage.getItem('currentProblem') : null
+  const problem: GeneratedProblem | null = raw ? JSON.parse(raw) : null
 
   const [selectedCause, setSelectedCause] = useState<WakaranaiCause | null>(null)
   const [supportMessage, setSupportMessage] = useState<string | null>(null)
