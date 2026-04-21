@@ -112,8 +112,8 @@ export default function Step2Page() {
   return (
     <main className="flex-1 p-4 flex flex-col gap-4">
       <div className="pt-6">
-        <button onClick={() => router.push(`/boss/${bossType}`)} className="text-sm mb-4 active:opacity-60" style={{ color: 'var(--burgundy)' }}>
-          ← コツに戻る
+        <button onClick={() => router.push(`/boss/${bossType}`)} className="text-sm mb-4 px-3 py-1.5 rounded-lg border active:opacity-60 font-medium" style={{ color: 'var(--burgundy)', borderColor: 'var(--burgundy)' }}>
+          ← 解説に戻る
         </button>
 
         <div className="flex items-start justify-between mb-3">

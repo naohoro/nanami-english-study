@@ -52,8 +52,8 @@ function WakaranaiContent() {
   return (
     <main className="flex-1 p-4 flex flex-col gap-4">
       <div className="pt-6">
-        <button onClick={() => router.back()} className="text-sm mb-4 active:opacity-60" style={{ color: 'var(--burgundy)' }}>
-          ← もどる
+        <button onClick={() => router.back()} className="text-sm mb-4 px-3 py-1.5 rounded-lg border active:opacity-60 font-medium" style={{ color: 'var(--burgundy)', borderColor: 'var(--burgundy)' }}>
+          ← 問題リストに戻る
         </button>
         <h1 className="text-xl font-black" style={{ color: '#1A1A1A' }}>どこがわからない？</h1>
         <p className="text-sm mt-1" style={{ color: '#787878' }}>理由を1つ選んでね</p>

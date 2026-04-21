@@ -23,8 +23,8 @@ export default function Step1Page() {
   return (
     <main className="flex-1 p-4 flex flex-col gap-4">
       <div className="pt-6">
-        <button onClick={() => router.push('/')} className="text-sm mb-4 active:opacity-60" style={{ color: 'var(--burgundy)' }}>
-          ← もどる
+        <button onClick={() => router.push('/')} className="text-sm mb-4 px-3 py-1.5 rounded-lg border active:opacity-60 font-medium" style={{ color: 'var(--burgundy)', borderColor: 'var(--burgundy)' }}>
+          ← 問題リストに戻る
         </button>
         <p className="text-xs font-bold tracking-wide" style={{ color: 'var(--burgundy)' }}>STEP 1 — コツを読む</p>
         <h1 className="text-xl font-black mt-1" style={{ color: '#1A1A1A' }}>{boss.name}</h1>
