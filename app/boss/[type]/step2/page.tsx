@@ -19,6 +19,7 @@ export default function Step2Page() {
   const [problem, setProblem] = useState<GeneratedProblem | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [revealed, setRevealed] = useState(false)
 
   useEffect(() => {
     async function fetchSample() {
@@ -81,13 +82,28 @@ export default function Step2Page() {
         <h1 className="text-xl font-black mt-1" style={{ color: '#1A1A1A' }}>{boss.name}</h1>
       </div>
 
-      <ProblemPanel problem={problem} revealAnswer={true} />
-      <AnswerReveal problem={problem} />
+      {problem.trickHint && (
+        <div className="rounded-2xl p-4" style={{ background: 'var(--gold-light)', border: '1px solid #E8D5A3' }}>
+          <p className="text-xs font-bold mb-1" style={{ color: 'var(--gold)' }}>💡 答えのヒント</p>
+          <p className="text-sm leading-relaxed" style={{ color: '#1A1A1A' }}>{problem.trickHint}</p>
+        </div>
+      )}
 
-      <div className="mt-auto space-y-3 pt-4">
-        <WakaranaiButton onClick={handleWakaranai} />
-        <BottomButton label="わかった！ひとりでやってみる →" onClick={handleGoToMaster} />
-      </div>
+      <ProblemPanel problem={problem} revealAnswer={revealed} />
+
+      {!revealed ? (
+        <div className="mt-auto pt-4">
+          <BottomButton label="回答を見る →" onClick={() => setRevealed(true)} />
+        </div>
+      ) : (
+        <>
+          <AnswerReveal problem={problem} />
+          <div className="space-y-3 pt-2 pb-4">
+            <WakaranaiButton onClick={handleWakaranai} />
+            <BottomButton label="わかった！ひとりでやってみる →" onClick={handleGoToMaster} />
+          </div>
+        </>
+      )}
     </main>
   )
 }

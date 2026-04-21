@@ -18,6 +18,7 @@ export function ProblemPanel({
 }: ProblemPanelProps) {
   const [showJapanese, setShowJapanese] = useState(false)
   const [japanese, setJapanese] = useState<string | null>(null)
+  const [translatedChoices, setTranslatedChoices] = useState<Record<string, string> | null>(null)
   const [translating, setTranslating] = useState(false)
 
   async function handleTranslate() {
@@ -27,10 +28,11 @@ export function ProblemPanel({
       const res = await fetch('/api/translate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ passageHtml: problem.passageHtml }),
+        body: JSON.stringify({ passageHtml: problem.passageHtml, choices: problem.choices }),
       })
       const data = await res.json()
       setJapanese(data.japanese)
+      setTranslatedChoices(data.choices ?? null)
       setShowJapanese(true)
     } finally {
       setTranslating(false)
@@ -92,6 +94,11 @@ export function ProblemPanel({
             >
               <span className="font-bold mr-2" style={{ color: 'var(--burgundy)' }}>{choice.label}.</span>
               <span style={{ color: '#1A1A1A' }}>{choice.text}</span>
+              {showJapanese && translatedChoices?.[choice.label] && (
+                <span className="block text-xs mt-1" style={{ color: '#787878' }}>
+                  （{translatedChoices[choice.label]}）
+                </span>
+              )}
             </button>
           )
         })}
