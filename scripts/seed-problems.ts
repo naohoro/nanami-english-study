@@ -1,10 +1,10 @@
 /**
  * One-time seed script: generates sample problems via Claude API and inserts to Supabase.
  *
- * Run:
- *   npx tsx scripts/seed-problems.ts
+ * Run all:        npx tsx scripts/seed-problems.ts
+ * Run one type:   BOSS_TYPE=vocab npx tsx scripts/seed-problems.ts
  *
- * Required env vars (from .env.local or set inline):
+ * Required env vars (from .env.local):
  *   NEXT_PUBLIC_SUPABASE_URL
  *   SUPABASE_SERVICE_ROLE_KEY
  *   ANTHROPIC_API_KEY
@@ -13,7 +13,6 @@
 import { config } from 'dotenv'
 import { resolve } from 'path'
 
-// Load .env.local from project root
 config({ path: resolve(__dirname, '../.env.local') })
 
 import Anthropic from '@anthropic-ai/sdk'
@@ -27,29 +26,79 @@ const supabase = createClient(
 )
 
 const BOSS_THEMES: Record<string, string[]> = {
-  outline: ['technology', 'environment', 'community', 'daily_life'],
-  email: ['travel', 'business', 'daily_life', 'community'],
+  vocab:        ['daily_life', 'technology', 'community', 'environment'],
+  grammar:      ['business', 'daily_life', 'technology', 'community'],
+  conversation: ['daily_life', 'travel', 'community', 'business'],
+  chart:        ['technology', 'environment', 'business', 'community'],
+  email:        ['travel', 'business', 'daily_life', 'community'],
+  story:        ['daily_life', 'community', 'travel', 'environment'],
+  multi_source: ['technology', 'environment', 'business', 'community'],
+  outline:      ['technology', 'environment', 'community', 'daily_life'],
 }
 
 const DIFFICULTY_LABELS = ['', '易しい', '標準以下', '標準', '標準以上', '難しい']
-
 const VARIANTS = 2
 
-function buildPrompt(bossType: string, difficulty: number, theme: string): string {
-  const themeMap: Record<string, string> = {
-    travel: '旅行・予約', technology: 'テクノロジー', environment: '環境・自然',
-    community: '地域コミュニティ', daily_life: '日常生活', business: 'ビジネス・買い物',
-  }
+const themeMap: Record<string, string> = {
+  travel: '旅行・予約', technology: 'テクノロジー', environment: '環境・自然',
+  community: '地域コミュニティ', daily_life: '日常生活', business: 'ビジネス・買い物',
+}
 
+function buildPrompt(bossType: string, difficulty: number, theme: string): string {
   const typeInstructions: Record<string, string> = {
-    outline: `
-問題タイプ：共通テスト第8問型（複数資料→アウトライン完成）
-- 資料1（150〜200語）：問題・状況を描写する文章
-- 資料2（150〜200語）：解決策・提案を描写する文章
-- アウトライン（穴埋め形式）：資料1と2を統合した論理的帰結
-- 設問：アウトラインの空欄に入る最適な選択肢を選ぶ（4択）
-- 正解：資料1の問題＋資料2の解決策の論理的帰結
-- 誤答：「感情的に正しそうだが論理的でない」選択肢を1つ以上含める`,
+    vocab: `
+問題タイプ：共通テスト第1問型（発音・アクセント）
+以下のどちらかの形式で作成してください（交互に使ってください）：
+形式A（発音）：4つの単語の下線部の発音が他と異なるものを1つ選ぶ
+形式B（アクセント）：4つの単語のうち強勢の位置が他と異なるものを1つ選ぶ
+
+passageHtml形式（形式A）：
+<p>Select the word whose underlined part is pronounced differently from the others.</p>
+<p>A.&nbsp;<u>発音記号の部分</u>rest &nbsp; B.&nbsp;<u>e</u>very &nbsp; C.&nbsp;<u>e</u>ight &nbsp; D.&nbsp;<u>e</u>at</p>
+
+passageHtml形式（形式B）：
+<p>Select the word whose stress (accent) is placed differently from the others.</p>
+<p>A.&nbsp;de-SIGN &nbsp; B.&nbsp;mo-MENT &nbsp; C.&nbsp;na-TION &nbsp; D.&nbsp;stu-DENT</p>
+
+choicesは A/B/C/D に単語のみ（下線や音節区切りなし）
+- 正解は発音・アクセントのルールに基づき1つだけ正しいこと（確実に正解が明確）
+- trickHint：そのルール（例：-tion の前の音節にアクセントが来る）を1文で`,
+
+    grammar: `
+問題タイプ：共通テスト第2問型（文法・語法の空所補充）
+- 空所のある英文1〜2文。空所に入る最適な語句を4択で選ぶ
+- 空所は①動詞の形（時制・態・不定詞・動名詞）②前置詞 ③接続詞・関係詞 のいずれか
+- passageHtmlは空所付き英文（空所は _____ で表す）
+- 誤答：品詞は正しいが時制・格・語法が間違うもの
+- questionText：「空所に入る最も適切なものを選べ」`,
+
+    conversation: `
+問題タイプ：共通テスト第3問型（会話文読解）
+- 4〜6往復の会話文。空所1か所に入る発言を4択で選ぶ
+- 空所は会話の自然な流れを妨げない位置に設定
+- passageHtml形式：
+  <p>A: "発言1"</p>
+  <p>B: "発言2"</p>
+  <p>A: "[&nbsp;&nbsp;&nbsp;&nbsp;]"</p>
+  <p>B: "続きの発言"</p>
+- 誤答：文脈に合わない返し・話題がズレる返し
+- questionText：「空所に入る最も適切なものを選べ」`,
+
+    chart: `
+問題タイプ：共通テスト第4問型（図表・グラフ読み取り）
+- HTML形式の表（<table>タグ使用）または棒グラフを文字で表現した資料
+- 具体的な数値・割合・順位を含む
+- 設問：表の数値や傾向について事実確認する問題（4択）
+- 誤答：表内の別の数値と混同しやすい選択肢を含める
+- passageHtml形式（テーブル例）：
+  <p><strong>[タイトル]</strong></p>
+  <table border="1" style="border-collapse:collapse;width:100%;font-size:0.9em">
+    <tr><th>項目</th><th>2022年</th><th>2023年</th><th>2024年</th></tr>
+    <tr><td>A</td><td>45%</td><td>52%</td><td>61%</td></tr>
+    <tr><td>B</td><td>30%</td><td>28%</td><td>25%</td></tr>
+  </table>
+  <p>出典：[架空の調査名]</p>`,
+
     email: `
 問題タイプ：共通テスト第5問型（メールのやり取り）
 - メール1（100〜150語）：依頼・質問・状況報告のいずれか
@@ -61,6 +110,36 @@ function buildPrompt(bossType: string, difficulty: number, theme: string): strin
 
 passageHtmlの形式（必ずこの形式でメール1とメール2の両方を含めること）：
 <p><strong>Email 1</strong></p><p>From: [送信者]<br>To: [宛先]<br>Subject: [件名]</p><p>[メール1本文]</p><p><strong>Email 2</strong></p><p>From: [送信者]<br>To: [宛先]<br>Subject: [件名]</p><p>[メール2本文]</p>`,
+
+    story: `
+問題タイプ：共通テスト第6問型（物語・長文読解）
+- 250〜350語の物語文または日記・ブログ形式のエッセイ
+- 登場人物の感情変化・行動の理由が明確に描かれていること
+- 感情語（worried / relieved / disappointed / surprised / proud 等）を最低2つ含める
+- 設問：登場人物の心情・行動の理由を問う問題（4択）
+- 誤答：感情は近いが本文に根拠がない選択肢を含める
+- passageHtml：<p>タグで段落区切り（4〜5段落）`,
+
+    multi_source: `
+問題タイプ：共通テスト第7問型（複数資料の統合）
+- 資料1（100〜150語）：ウェブページ・パンフレット・案内文のいずれか
+- 資料2（100〜150語）：資料1に関連するが別視点の情報（FAQ・レビュー・補足案内等）
+- 必ず両方の資料を参照しないと解けない設問にすること
+- 設問：両資料を統合して答える事実確認問題（4択）
+- 正解：資料1＋資料2の情報を組み合わせた結論
+- 誤答：資料1のみ・資料2のみで導ける「半正解」選択肢を含める
+
+passageHtml形式：
+<p><strong>Resource 1: [タイトル]</strong></p><p>[資料1本文]</p><p><strong>Resource 2: [タイトル]</strong></p><p>[資料2本文]</p>`,
+
+    outline: `
+問題タイプ：共通テスト第8問型（複数資料→アウトライン完成）
+- 資料1（150〜200語）：問題・状況を描写する文章
+- 資料2（150〜200語）：解決策・提案を描写する文章
+- アウトライン（穴埋め形式）：資料1と2を統合した論理的帰結
+- 設問：アウトラインの空欄に入る最適な選択肢を選ぶ（4択）
+- 正解：資料1の問題＋資料2の解決策の論理的帰結
+- 誤答：「感情的に正しそうだが論理的でない」選択肢を1つ以上含める`,
   }
 
   return `あなたは日本の共通テスト英語問題の専門家です。以下の仕様に厳密に従って問題を生成してください。
@@ -155,7 +234,7 @@ async function seed() {
   }
 
   console.log(`\nDone. ${total - failed}/${total} inserted.`)
-  if (failed > 0) console.log(`${failed} failed — re-run to retry (duplicate inserts are safe).`)
+  if (failed > 0) console.log(`${failed} failed — re-run with BOSS_TYPE=<type> to retry.`)
 }
 
 seed().catch(console.error)

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import type { BossType, GeneratedProblem } from '@/lib/types'
 
-const VALID_BOSS_TYPES = ['outline', 'email'] as const
+const VALID_BOSS_TYPES = ['vocab', 'grammar', 'conversation', 'chart', 'email', 'story', 'multi_source', 'outline'] as const
 
 export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient()

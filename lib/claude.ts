@@ -23,14 +23,34 @@ function buildProblemPrompt(
   const difficultyDesc = ['', '易しい', '標準以下', '標準', '標準以上', '難しい'][difficulty]
 
   const typeInstructions: Record<BossType, string> = {
-    outline: `
-問題タイプ：共通テスト第8問型（複数資料→アウトライン完成）
-- 資料1（150〜200語）：問題・状況を描写する文章
-- 資料2（150〜200語）：解決策・提案を描写する文章
-- アウトライン（穴埋め形式）：資料1と2を統合した論理的帰結
-- 設問：アウトラインの空欄に入る最適な選択肢を選ぶ（4択）
-- 正解：資料1の問題＋資料2の解決策の論理的帰結
-- 誤答：「感情的に正しそうだが論理的でない」選択肢を1つ以上含める
+    vocab: `
+問題タイプ：共通テスト第1問型（発音・アクセント）
+形式A（発音）またはB（アクセント）どちらかで作成：
+形式A：4語の下線部の発音が他と異なる1語を選ぶ
+形式B：4語のうち強勢の位置が他と異なる1語を選ぶ
+passageHtml例(A): <p>Select the word whose underlined part is pronounced differently.</p><p>A.&nbsp;<u>e</u>at &nbsp; B.&nbsp;<u>e</u>ight &nbsp; C.&nbsp;<u>e</u>very &nbsp; D.&nbsp;<u>e</u>at</p>
+passageHtml例(B): <p>Select the word with a different stress pattern.</p><p>A.&nbsp;de-SIGN &nbsp; B.&nbsp;mo-MENT &nbsp; C.&nbsp;na-TION &nbsp; D.&nbsp;stu-DENT</p>
+choicesはA/B/C/Dに単語のみ（下線・音節区切りなし）
+`,
+    grammar: `
+問題タイプ：共通テスト第2問型（文法・語法の空所補充）
+- 空所のある英文1〜2文。空所に入る最適な語句を4択で選ぶ
+- 空所は①動詞の形 ②前置詞 ③接続詞・関係詞 のいずれか
+- passageHtmlは空所付き英文（空所は _____ で表す）
+- questionText：「空所に入る最も適切なものを選べ」
+`,
+    conversation: `
+問題タイプ：共通テスト第3問型（会話文読解）
+- 4〜6往復の会話文。空所1か所に入る発言を4択で選ぶ
+- passageHtml形式：<p>A: "発言1"</p><p>B: "発言2"</p><p>A: "[&nbsp;&nbsp;]"</p><p>B: "続きの発言"</p>
+- questionText：「空所に入る最も適切なものを選べ」
+`,
+    chart: `
+問題タイプ：共通テスト第4問型（図表・グラフ読み取り）
+- HTML形式の表（<table>タグ必須）＋簡単な説明文
+- 具体的な数値・割合・順位を含む
+- 設問：表の数値や傾向について事実確認する問題（4択）
+- passageHtml形式：<p><strong>[タイトル]</strong></p><table border="1" style="border-collapse:collapse;width:100%;font-size:0.9em"><tr><th>項目</th><th>A</th><th>B</th></tr><tr><td>...</td><td>...</td><td>...</td></tr></table>
 `,
     email: `
 問題タイプ：共通テスト第5問型（メールのやり取り）
@@ -43,6 +63,29 @@ function buildProblemPrompt(
 
 passageHtmlの形式（必ずこの形式でメール1とメール2の両方を含めること）：
 <p><strong>Email 1</strong></p><p>From: [送信者]<br>To: [宛先]<br>Subject: [件名]</p><p>[メール1本文]</p><p><strong>Email 2</strong></p><p>From: [送信者]<br>To: [宛先]<br>Subject: [件名]</p><p>[メール2本文]</p>
+`,
+    story: `
+問題タイプ：共通テスト第6問型（物語・長文読解）
+- 250〜350語の物語文または日記・ブログ形式のエッセイ
+- 登場人物の感情変化・行動の理由を含む（感情語を最低2つ）
+- 設問：登場人物の心情・行動の理由を問う問題（4択）
+- passageHtml：<p>タグで段落区切り（4〜5段落）
+`,
+    multi_source: `
+問題タイプ：共通テスト第7問型（複数資料の統合）
+- 資料1（100〜150語）：ウェブページ・パンフレット等
+- 資料2（100〜150語）：資料1に関連する別視点の情報
+- 両方の資料を参照しないと解けない設問
+- passageHtml形式：<p><strong>Resource 1: [タイトル]</strong></p><p>[本文]</p><p><strong>Resource 2: [タイトル]</strong></p><p>[本文]</p>
+`,
+    outline: `
+問題タイプ：共通テスト第8問型（複数資料→アウトライン完成）
+- 資料1（150〜200語）：問題・状況を描写する文章
+- 資料2（150〜200語）：解決策・提案を描写する文章
+- アウトライン（穴埋め形式）：資料1と2を統合した論理的帰結
+- 設問：アウトラインの空欄に入る最適な選択肢を選ぶ（4択）
+- 正解：資料1の問題＋資料2の解決策の論理的帰結
+- 誤答：「感情的に正しそうだが論理的でない」選択肢を1つ以上含める
 `,
   }
 

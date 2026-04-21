@@ -6,6 +6,7 @@ import { BOSS_CONFIGS } from '@/lib/boss-data'
 import { ProblemPanel } from '@/components/boss/ProblemPanel'
 import { BottomButton } from '@/components/ui/BottomButton'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
+import { ProblemTimer } from '@/components/ui/ProblemTimer'
 import type { BossType, GeneratedProblem } from '@/lib/types'
 
 interface HighlightInfo {
@@ -93,8 +94,13 @@ function MasterContent() {
         <button onClick={() => router.push(`/boss/${bossType}/step2`)} className="text-sm mb-4 active:opacity-60" style={{ color: 'var(--burgundy)' }}>
           ← 答えに戻る
         </button>
-        <p className="text-xs font-bold tracking-wide" style={{ color: '#E53935' }}>ひとりでやってみる — ヒントなし</p>
-        <h1 className="text-xl font-black mt-1" style={{ color: '#1A1A1A' }}>{boss.name}</h1>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs font-bold tracking-wide" style={{ color: '#E53935' }}>ひとりでやってみる — ヒントなし</p>
+            <h1 className="text-xl font-black mt-1" style={{ color: '#1A1A1A' }}>{boss.name}</h1>
+          </div>
+          <ProblemTimer limitSeconds={boss.timeLimit} running={!submitted} />
+        </div>
       </div>
 
       <ProblemPanel

@@ -1,4 +1,12 @@
-export type BossType = 'outline' | 'email'
+export type BossType =
+  | 'vocab'
+  | 'grammar'
+  | 'conversation'
+  | 'chart'
+  | 'email'
+  | 'story'
+  | 'multi_source'
+  | 'outline'
 
 export type ProblemTheme =
   | 'travel'
@@ -23,22 +31,16 @@ export type MasteryStatus = 'untouched' | 'in_progress' | 'cleared'
 
 // Claude APIが返す問題データ
 export interface GeneratedProblem {
-  id: string // クライアント側でuuidv4生成
+  id: string
   bossType: BossType
   theme: ProblemTheme
   difficulty: 1 | 2 | 3 | 4 | 5
   mode: ProblemMode
-  // 問題本文（資料テキスト・メール本文など）
   passageHtml: string
-  // 設問文
   questionText: string
-  // 選択肢 (A〜D)
   choices: { label: 'A' | 'B' | 'C' | 'D'; text: string }[]
-  // 正解ラベル
   correctLabel: 'A' | 'B' | 'C' | 'D'
-  // 解説（answer_firstモードのみ返す、challengeではnull）
   explanation: string | null
-  // 裏技のどのポイントが使えるか（任意）
   trickHint: string | null
 }
 
@@ -76,6 +78,7 @@ export interface BossConfig {
   name: string
   section: number
   points: number
+  timeLimit: number  // seconds
   trick: string
   trickSteps: string[]
   example?: { en: string; ja: string }

@@ -8,6 +8,7 @@ import { AnswerReveal } from '@/components/boss/AnswerReveal'
 import { WakaranaiButton } from '@/components/boss/WakaranaiButton'
 import { BottomButton } from '@/components/ui/BottomButton'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
+import { ProblemTimer } from '@/components/ui/ProblemTimer'
 import type { BossType, GeneratedProblem } from '@/lib/types'
 
 const DIFFICULTY_LABELS: Record<number, string> = {
@@ -29,6 +30,7 @@ export default function Step2Page() {
   const [error, setError] = useState<string | null>(null)
   const [revealed, setRevealed] = useState(false)
   const [adjusting, setAdjusting] = useState(false)
+  const [timerKey, setTimerKey] = useState(0)
 
   async function fetchSample() {
     if (!boss) return
@@ -40,6 +42,7 @@ export default function Step2Page() {
       if (!res.ok) throw new Error('取得失敗')
       const data = await res.json()
       setProblem(data)
+      setTimerKey(k => k + 1)
     } catch {
       setError('問題の取得に失敗しました。もう一度試してください。')
     } finally {
@@ -104,8 +107,13 @@ export default function Step2Page() {
         <button onClick={() => router.push(`/boss/${bossType}`)} className="text-sm mb-4 active:opacity-60" style={{ color: 'var(--burgundy)' }}>
           ← コツに戻る
         </button>
-        <p className="text-xs font-bold tracking-wide" style={{ color: 'var(--burgundy)' }}>STEP 2 — 答えを確認しながら読む</p>
-        <h1 className="text-xl font-black mt-1" style={{ color: '#1A1A1A' }}>{boss.name}</h1>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs font-bold tracking-wide" style={{ color: 'var(--burgundy)' }}>STEP 2 — 答えを確認しながら読む</p>
+            <h1 className="text-xl font-black mt-1" style={{ color: '#1A1A1A' }}>{boss.name}</h1>
+          </div>
+          <ProblemTimer key={timerKey} limitSeconds={boss.timeLimit} running={!revealed} />
+        </div>
       </div>
 
       {/* 難易度セレクター */}
