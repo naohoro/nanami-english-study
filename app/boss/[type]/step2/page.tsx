@@ -21,27 +21,21 @@ export default function Step2Page() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    async function generate() {
+    async function fetchSample() {
       if (!boss) return
       setLoading(true)
       try {
-        const themes = boss.themes
-        const theme = themes[Math.floor(Math.random() * themes.length)]
-        const res = await fetch('/api/generate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ bossType, difficulty: 2, theme, mode: 'answer_first' }),
-        })
-        if (!res.ok) throw new Error('生成失敗')
+        const res = await fetch(`/api/sample-problem?bossType=${bossType}`)
+        if (!res.ok) throw new Error('取得失敗')
         const data = await res.json()
         setProblem(data)
       } catch {
-        setError('問題の生成に失敗しました。もう一度試してください。')
+        setError('問題の取得に失敗しました。もう一度試してください。')
       } finally {
         setLoading(false)
       }
     }
-    generate()
+    fetchSample()
   }, [bossType, boss])
 
   if (!boss) {

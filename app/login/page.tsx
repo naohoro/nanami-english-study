@@ -37,9 +37,9 @@ export default function LoginPage() {
   return (
     <main className="flex-1 p-6 flex flex-col justify-center gap-8">
       <div>
-        <p className="text-xs font-bold tracking-widest mb-2" style={{ color: 'var(--burgundy)' }}>NANAMI&apos;S ENGLISH APP</p>
+        <p className="text-xs font-bold tracking-widest mb-2" style={{ color: 'var(--burgundy)' }}>共通テスト英語 完全対策</p>
         <h1 className="text-2xl font-black" style={{ color: '#1A1A1A' }}>共通テスト英語<br />最短攻略アプリ</h1>
-        <p className="text-sm mt-2" style={{ color: '#787878' }}>お父さんから七海への特別な勉強法</p>
+        <p className="text-sm mt-2" style={{ color: '#787878' }}>共通テスト英語を最短で攻略する特別な勉強法</p>
       </div>
 
       <div className="space-y-3">

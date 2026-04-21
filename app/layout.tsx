@@ -5,7 +5,7 @@ import './globals.css'
 const geist = Geist({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: '七海の英語アプリ',
+  title: '共通テスト英語 完全対策',
   description: '共通テスト英語を最短で攻略する',
 }
 

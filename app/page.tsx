@@ -45,7 +45,7 @@ export default async function MapPage() {
   return (
     <main className="flex-1 p-4 space-y-4">
       <div className="pt-6 pb-2">
-        <p className="text-xs font-bold tracking-widest mb-1" style={{ color: 'var(--burgundy)' }}>NANAMI&apos;S ENGLISH APP</p>
+        <p className="text-xs font-bold tracking-widest mb-1" style={{ color: 'var(--burgundy)' }}>共通テスト英語 完全対策</p>
         <h1 className="text-2xl font-black" style={{ color: '#1A1A1A' }}>どの型の問題を攻略する？</h1>
         <p className="text-sm mt-1" style={{ color: '#787878' }}>配点が大きい順に並んでいるよ</p>
       </div>

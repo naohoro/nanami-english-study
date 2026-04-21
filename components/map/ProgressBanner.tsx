@@ -24,7 +24,7 @@ export function ProgressBanner({ masteries }: ProgressBannerProps) {
 
   return (
     <div className="rounded-2xl p-4 space-y-2" style={{ background: 'var(--burgundy-light)', border: '1px solid #D4A0B8' }}>
-      <p className="text-xs font-bold" style={{ color: 'var(--burgundy)' }}>七海の進捗</p>
+      <p className="text-xs font-bold" style={{ color: 'var(--burgundy)' }}>あなたの進捗</p>
       {cleared.length > 0 && (
         <div>
           {cleared.map((m) => (
