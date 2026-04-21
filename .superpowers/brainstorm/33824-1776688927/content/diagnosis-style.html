@@ -1,0 +1,29 @@
+<h2>どうやって「わかってないこと」を見つける？</h2>
+<p class="subtitle">診断の仕組みとして、どのスタイルが娘さんに合いそうですか？</p>
+
+<div class="options">
+  <div class="option" data-choice="quiz" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>問題を解いて自動判定</h3>
+      <p>「この単語の意味は？」「この文を訳して」などの問題を出す。正解・不正解を自動で集計して、弱点単元マップを表示する。</p>
+      <p style="margin-top:8px; color: #888; font-size:0.9em">⚠ 正誤判定の実装がやや複雑。記述は判定しにくい。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="selfcheck" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>自己チェック式</h3>
+      <p>問題を見て「わかった / なんとなく / わからない」を自分で選ぶ。正誤判定不要。娘さん自身が「わかってる感覚」を記録する。</p>
+      <p style="margin-top:8px; color: #888; font-size:0.9em">✅ シンプルで素早く作れる。ADHD向けに短時間で完結しやすい。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="mixed" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>選択式クイズ＋自己チェック</h3>
+      <p>4択問題で自動判定しつつ、「なんとなく合ってた」も記録できる。正確な弱点把握と、娘さんの自信レベルを両方追う。</p>
+      <p style="margin-top:8px; color: #888; font-size:0.9em">✅ バランス型。看護系入試の形式（マーク式）に近い。</p>
+    </div>
+  </div>
+</div>

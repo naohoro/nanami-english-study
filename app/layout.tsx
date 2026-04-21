@@ -5,8 +5,8 @@ import './globals.css'
 const geist = Geist({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: '七海の英語攻略アプリ',
-  description: '共通テスト英語の裏技アプリ',
+  title: '七海の英語アプリ',
+  description: '共通テスト英語を最短で攻略する',
 }
 
 export const viewport: Viewport = {
@@ -22,8 +22,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body className={`${geist.className} bg-gray-950 text-white min-h-screen`}>
-        <div className="max-w-md mx-auto min-h-screen flex flex-col">
+      <body className={`${geist.className} min-h-screen`} style={{ background: 'var(--cream)', color: '#1A1A1A' }}>
+        <div className="max-w-md md:max-w-xl lg:max-w-2xl mx-auto min-h-screen flex flex-col">
           {children}
         </div>
       </body>

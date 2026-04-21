@@ -14,17 +14,24 @@ export function BottomButton({
   disabled = false,
 }: BottomButtonProps) {
   const variantStyles = {
-    primary: 'bg-yellow-400 text-gray-900 active:bg-yellow-500',
-    secondary: 'bg-gray-700 text-white active:bg-gray-600',
+    primary: 'text-white active:opacity-80',
+    secondary: 'text-[#8C1A4B] active:opacity-80',
     danger: 'bg-red-500 text-white active:bg-red-600',
+  }
+
+  const bgStyles = {
+    primary: { background: 'var(--burgundy)' },
+    secondary: { background: 'var(--burgundy-light)', border: '1px solid var(--border)' },
+    danger: {},
   }
 
   return (
     <button
       onClick={onClick}
       disabled={disabled}
+      style={bgStyles[variant]}
       className={`
-        w-full py-4 rounded-2xl text-lg font-bold transition-colors
+        w-full py-4 rounded-2xl text-base font-bold transition-opacity
         disabled:opacity-40 disabled:cursor-not-allowed
         ${variantStyles[variant]}
       `}

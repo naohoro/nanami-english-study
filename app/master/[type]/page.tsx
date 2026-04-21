@@ -24,14 +24,12 @@ function MasterContent() {
   if (!boss || !problem) {
     return (
       <main className="flex-1 p-4 flex items-center justify-center">
-        <p className="text-red-400">問題データがありません</p>
+        <p style={{ color: '#E53935' }}>問題データがありません</p>
       </main>
     )
   }
 
-  // Ensure no answer reveal in challenge mode
   const challengeProblem: GeneratedProblem = { ...problem, explanation: null }
-
   const isCorrect = submitted && selectedLabel === challengeProblem.correctLabel
 
   async function handleSubmit() {
@@ -55,16 +53,17 @@ function MasterContent() {
     setSubmitted(true)
     setSaving(false)
 
-    if (correct) {
-      router.push(`/cleared?bossType=${bossType}`)
-    }
+    if (correct) router.push(`/cleared?bossType=${bossType}`)
   }
 
   return (
     <main className="flex-1 p-4 flex flex-col gap-4">
       <div className="pt-6">
-        <p className="text-xs text-red-400 font-bold">⚔️ マスターコース — ヒントなし本番</p>
-        <h1 className="text-xl font-black mt-1">{boss.name}</h1>
+        <button onClick={() => router.push(`/boss/${bossType}/step2`)} className="text-sm mb-4 active:opacity-60" style={{ color: 'var(--burgundy)' }}>
+          ← 答えに戻る
+        </button>
+        <p className="text-xs font-bold tracking-wide" style={{ color: '#E53935' }}>ひとりでやってみる — ヒントなし</p>
+        <h1 className="text-xl font-black mt-1" style={{ color: '#1A1A1A' }}>{boss.name}</h1>
       </div>
 
       <ProblemPanel
@@ -75,9 +74,9 @@ function MasterContent() {
       />
 
       {submitted && !isCorrect && (
-        <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-4">
-          <p className="text-sm text-red-300">惜しい！正解は {challengeProblem.correctLabel} だったよ。</p>
-          <p className="text-xs text-gray-400 mt-1">もう一度チャレンジしてみる？</p>
+        <div className="rounded-2xl p-4" style={{ background: '#FFF0F0', border: '1.5px solid #E57373' }}>
+          <p className="text-sm font-bold" style={{ color: '#C62828' }}>惜しい！正解は {challengeProblem.correctLabel} だったよ。</p>
+          <p className="text-xs mt-1" style={{ color: '#787878' }}>もう一度チャレンジしてみる？</p>
         </div>
       )}
 
@@ -92,13 +91,10 @@ function MasterContent() {
           <>
             <BottomButton
               label="もう一度挑戦する"
-              onClick={() => {
-                setSelectedLabel(null)
-                setSubmitted(false)
-              }}
+              onClick={() => { setSelectedLabel(null); setSubmitted(false) }}
             />
             <BottomButton
-              label="マップに戻る"
+              label="問題一覧に戻る"
               onClick={() => router.push('/')}
               variant="secondary"
             />
@@ -113,7 +109,7 @@ export default function MasterPage() {
   return (
     <Suspense fallback={
       <div className="flex-1 flex items-center justify-center">
-        <LoadingSpinner label="本番問題を準備中..." />
+        <LoadingSpinner label="準備中..." />
       </div>
     }>
       <MasterContent />

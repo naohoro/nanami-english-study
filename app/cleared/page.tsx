@@ -13,21 +13,21 @@ function ClearedContent() {
   const boss = BOSS_CONFIGS[bossType]
 
   return (
-    <main className="flex-1 p-4 flex flex-col items-center justify-center gap-6 text-center">
+    <main className="flex-1 p-6 flex flex-col items-center justify-center gap-6 text-center">
       <div className="text-7xl">🎉</div>
       <div>
-        <h1 className="text-3xl font-black">攻略！</h1>
-        <p className="text-yellow-400 text-xl font-bold mt-2">{boss?.name ?? 'ボス'}</p>
-        <p className="text-gray-400 text-sm mt-3">裏技が使いこなせたね。</p>
+        <h1 className="text-3xl font-black" style={{ color: '#1A1A1A' }}>できた！</h1>
+        <p className="text-xl font-bold mt-2" style={{ color: 'var(--burgundy)' }}>{boss?.name ?? '問題'}</p>
+        <p className="text-sm mt-3" style={{ color: '#787878' }}>コツが使いこなせたね。</p>
       </div>
 
-      <div className="w-full space-y-3 mt-8">
+      <div className="w-full space-y-3 mt-6">
         <BottomButton
-          label="次のボスに挑む"
+          label="他の問題に挑戦する →"
           onClick={() => router.push('/')}
         />
         <BottomButton
-          label="もう一度このボスを倒す"
+          label="もう一度やってみる"
           onClick={() => router.push(`/boss/${bossType}`)}
           variant="secondary"
         />

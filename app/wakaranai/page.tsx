@@ -45,24 +45,24 @@ function WakaranaiContent() {
   return (
     <main className="flex-1 p-4 flex flex-col gap-4">
       <div className="pt-6">
-        <h1 className="text-xl font-black">どこがわからない？</h1>
-        <p className="text-gray-400 text-sm mt-1">理由を1つ選んでね</p>
+        <button onClick={() => router.back()} className="text-sm mb-4 active:opacity-60" style={{ color: 'var(--burgundy)' }}>
+          ← もどる
+        </button>
+        <h1 className="text-xl font-black" style={{ color: '#1A1A1A' }}>どこがわからない？</h1>
+        <p className="text-sm mt-1" style={{ color: '#787878' }}>理由を1つ選んでね</p>
       </div>
 
       <CauseSelector selectedCause={selectedCause} onSelect={setSelectedCause} />
 
       {selectedCause && !supportMessage && !loadingSupport && (
-        <BottomButton
-          label="サポートを見る"
-          onClick={handleGetSupport}
-        />
+        <BottomButton label="サポートを見る" onClick={handleGetSupport} />
       )}
 
       {loadingSupport && <LoadingSpinner label="考えてるよ..." />}
 
       {supportMessage && (
-        <div className="bg-blue-500/10 border border-blue-500/30 rounded-2xl p-4">
-          <p className="text-sm text-gray-200 leading-relaxed">{supportMessage}</p>
+        <div className="rounded-2xl p-4" style={{ background: '#EFF8FF', border: '1px solid #93C5FD' }}>
+          <p className="text-sm leading-relaxed" style={{ color: '#1A1A1A' }}>{supportMessage}</p>
         </div>
       )}
 

@@ -5,11 +5,13 @@ import { MapCard } from '@/components/map/MapCard'
 import { ProgressBanner } from '@/components/map/ProgressBanner'
 import type { Mastery, BossType } from '@/lib/types'
 
-async function getMasteries(): Promise<Mastery[]> {
+async function getMasteries(): Promise<{ masteries: Mastery[]; onboardingDone: boolean }> {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) redirect('/login')
+
+  const onboardingDone = !!user.user_metadata?.onboarding_done
 
   const { data } = await supabase
     .from('mastery')
@@ -19,7 +21,7 @@ async function getMasteries(): Promise<Mastery[]> {
   const allBossTypes = Object.keys(BOSS_CONFIGS) as BossType[]
   const masteryMap = new Map(data?.map((r: { boss_type: string; status: string; cleared_at: string | null; attempt_count: number }) => [r.boss_type, r]) ?? [])
 
-  return allBossTypes.map((bossType) => {
+  const masteries = allBossTypes.map((bossType) => {
     const row = masteryMap.get(bossType)
     return {
       userId: user.id,
@@ -29,17 +31,23 @@ async function getMasteries(): Promise<Mastery[]> {
       attemptCount: row?.attempt_count ?? 0,
     }
   })
+
+  return { masteries, onboardingDone }
 }
 
 export default async function MapPage() {
-  const masteries = await getMasteries()
+  const { masteries, onboardingDone } = await getMasteries()
+
+  if (!onboardingDone) redirect('/onboarding')
+
   const masteryMap = new Map(masteries.map((m) => [m.bossType, m.status]))
 
   return (
     <main className="flex-1 p-4 space-y-4">
-      <div className="pt-6">
-        <h1 className="text-2xl font-black tracking-tight">攻略マップ</h1>
-        <p className="text-gray-400 text-sm mt-1">どのボスに挑む？</p>
+      <div className="pt-6 pb-2">
+        <p className="text-xs font-bold tracking-widest mb-1" style={{ color: 'var(--burgundy)' }}>NANAMI&apos;S ENGLISH APP</p>
+        <h1 className="text-2xl font-black" style={{ color: '#1A1A1A' }}>どの型の問題を攻略する？</h1>
+        <p className="text-sm mt-1" style={{ color: '#787878' }}>配点が大きい順に並んでいるよ</p>
       </div>
 
       <ProgressBanner masteries={masteries} />

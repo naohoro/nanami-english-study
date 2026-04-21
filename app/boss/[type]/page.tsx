@@ -15,29 +15,28 @@ export default function Step1Page() {
   if (!boss) {
     return (
       <main className="flex-1 p-4 flex items-center justify-center">
-        <p className="text-red-400">ボスが見つかりません</p>
+        <p style={{ color: '#E53935' }}>問題タイプが見つかりません</p>
       </main>
     )
-  }
-
-  function handleNext() {
-    router.push(`/boss/${bossType}/step2`)
   }
 
   return (
     <main className="flex-1 p-4 flex flex-col gap-4">
       <div className="pt-6">
-        <p className="text-xs text-gray-400">第{boss.section}問型</p>
-        <h1 className="text-2xl font-black mt-1">{boss.name}</h1>
-        <p className="text-yellow-400 text-sm mt-1">まず攻略法を見よう</p>
+        <button onClick={() => router.push('/')} className="text-sm mb-4 active:opacity-60" style={{ color: 'var(--burgundy)' }}>
+          ← もどる
+        </button>
+        <p className="text-xs font-bold tracking-wide" style={{ color: 'var(--burgundy)' }}>STEP 1 — コツを読む</p>
+        <h1 className="text-xl font-black mt-1" style={{ color: '#1A1A1A' }}>{boss.name}</h1>
+        <p className="text-sm mt-1" style={{ color: '#787878' }}>まずコツを読んでから問題を見よう</p>
       </div>
 
-      <TrickPanel trick={boss.trick} steps={boss.trickSteps} />
+      <TrickPanel trick={boss.trick} steps={boss.trickSteps} example={boss.example} />
 
       <div className="mt-auto pt-4">
         <BottomButton
           label="わかった！問題を見る →"
-          onClick={handleNext}
+          onClick={() => router.push(`/boss/${bossType}/step2`)}
         />
       </div>
     </main>

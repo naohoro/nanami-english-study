@@ -11,22 +11,23 @@ interface CauseSelectorProps {
 export function CauseSelector({ selectedCause, onSelect }: CauseSelectorProps) {
   return (
     <div className="space-y-2">
-      {WAKARANAI_CAUSES.map((cause) => (
-        <button
-          key={cause.key}
-          onClick={() => onSelect(cause.key)}
-          className={`
-            w-full text-left border-2 rounded-xl p-4 transition-colors
-            ${selectedCause === cause.key
-              ? 'border-yellow-400 bg-yellow-400/10'
-              : 'border-gray-700 bg-gray-900 active:bg-gray-800'
-            }
-          `}
-        >
-          <p className="font-bold text-sm">{cause.label}</p>
-          <p className="text-xs text-gray-400 mt-1">{cause.support}</p>
-        </button>
-      ))}
+      {WAKARANAI_CAUSES.map((cause) => {
+        const isSelected = selectedCause === cause.key
+        return (
+          <button
+            key={cause.key}
+            onClick={() => onSelect(cause.key)}
+            className="w-full text-left rounded-xl p-4 transition-colors active:opacity-70"
+            style={{
+              border: `2px solid ${isSelected ? 'var(--burgundy)' : 'var(--border)'}`,
+              background: isSelected ? 'var(--burgundy-light)' : '#fff',
+            }}
+          >
+            <p className="font-bold text-sm" style={{ color: '#1A1A1A' }}>{cause.label}</p>
+            <p className="text-xs mt-1" style={{ color: '#787878' }}>{cause.support}</p>
+          </button>
+        )
+      })}
     </div>
   )
 }

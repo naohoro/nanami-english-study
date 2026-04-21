@@ -11,28 +11,31 @@ export function ProgressBanner({ masteries }: ProgressBannerProps) {
 
   if (cleared.length === 0 && inProgress.length === 0) {
     return (
-      <div className="bg-gray-900 rounded-2xl p-4">
-        <p className="text-gray-400 text-sm">最初のボスに挑戦しよう！</p>
+      <div className="rounded-2xl p-4" style={{ background: 'var(--gold-light)', border: '1px solid #E8D5A3' }}>
+        <p className="text-sm font-medium" style={{ color: 'var(--gold)' }}>
+          まずここから始めよう ✨
+        </p>
+        <p className="text-xs mt-1" style={{ color: '#787878' }}>
+          配点が大きい問題から攻略するのが、点数アップへの近道。
+        </p>
       </div>
     )
   }
 
   return (
-    <div className="bg-gray-900 rounded-2xl p-4 space-y-2">
-      <p className="text-xs text-gray-500 font-mono">📊 七海の攻略状況</p>
+    <div className="rounded-2xl p-4 space-y-2" style={{ background: 'var(--burgundy-light)', border: '1px solid #D4A0B8' }}>
+      <p className="text-xs font-bold" style={{ color: 'var(--burgundy)' }}>七海の進捗</p>
       {cleared.length > 0 && (
         <div>
-          <p className="text-xs text-green-400 mb-1">🏆 攻略済み</p>
           {cleared.map((m) => (
-            <p key={m.bossType} className="text-sm">✅ {BOSS_CONFIGS[m.bossType]?.name ?? m.bossType}</p>
+            <p key={m.bossType} className="text-sm">✅ {BOSS_CONFIGS[m.bossType]?.name ?? m.bossType}　クリア！</p>
           ))}
         </div>
       )}
       {inProgress.length > 0 && (
         <div>
-          <p className="text-xs text-yellow-400 mb-1">🔥 挑戦中</p>
           {inProgress.map((m) => (
-            <p key={m.bossType} className="text-sm">🔥 {BOSS_CONFIGS[m.bossType]?.name ?? m.bossType}</p>
+            <p key={m.bossType} className="text-sm">🔥 {BOSS_CONFIGS[m.bossType]?.name ?? m.bossType}　練習中</p>
           ))}
         </div>
       )}

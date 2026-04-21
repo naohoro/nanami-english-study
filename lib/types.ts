@@ -78,5 +78,6 @@ export interface BossConfig {
   points: number
   trick: string
   trickSteps: string[]
+  example?: { en: string; ja: string }
   themes: ProblemTheme[]
 }
