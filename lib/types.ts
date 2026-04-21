@@ -29,6 +29,14 @@ export type SessionResult = 'cleared' | 'wakaranai' | 'pending'
 
 export type MasteryStatus = 'untouched' | 'in_progress' | 'cleared'
 
+export interface Question {
+  number: number
+  questionText: string
+  choices: { label: 'A' | 'B' | 'C' | 'D'; text: string }[]
+  correctLabel: 'A' | 'B' | 'C' | 'D'
+  explanation: string | null
+}
+
 // Claude APIが返す問題データ
 export interface GeneratedProblem {
   id: string
@@ -36,11 +44,9 @@ export interface GeneratedProblem {
   theme: ProblemTheme
   difficulty: 1 | 2 | 3 | 4 | 5
   mode: ProblemMode
+  scenario: string
   passageHtml: string
-  questionText: string
-  choices: { label: 'A' | 'B' | 'C' | 'D'; text: string }[]
-  correctLabel: 'A' | 'B' | 'C' | 'D'
-  explanation: string | null
+  questions: Question[]
   trickHint: string | null
 }
 
@@ -78,6 +84,7 @@ export interface BossConfig {
   name: string
   section: number
   points: number
+  questionCount: number
   timeLimit: number  // seconds
   trick: string
   trickSteps: string[]
