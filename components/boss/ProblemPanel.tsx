@@ -8,6 +8,20 @@ interface ProblemPanelProps {
   selectedLabel?: 'A' | 'B' | 'C' | 'D' | null
   onSelect?: (label: 'A' | 'B' | 'C' | 'D') => void
   revealAnswer?: boolean
+  highlightText?: string
+  highlightColor?: 'green' | 'pink'
+}
+
+function injectHighlight(html: string, text: string, color: 'green' | 'pink'): string {
+  if (!text) return html
+  const bg = color === 'green' ? '#BBFFD4' : '#FFD0D0'
+  const idx = html.indexOf(text)
+  if (idx === -1) return html
+  return (
+    html.slice(0, idx) +
+    `<mark style="background:${bg};border-radius:2px;padding:1px 2px">${text}</mark>` +
+    html.slice(idx + text.length)
+  )
 }
 
 export function ProblemPanel({
@@ -15,6 +29,8 @@ export function ProblemPanel({
   selectedLabel,
   onSelect,
   revealAnswer = false,
+  highlightText,
+  highlightColor,
 }: ProblemPanelProps) {
   const [showJapanese, setShowJapanese] = useState(false)
   const [japanese, setJapanese] = useState<string | null>(null)
@@ -63,7 +79,11 @@ export function ProblemPanel({
           <div
             className="p-4 text-sm leading-relaxed"
             style={{ color: '#1A1A1A' }}
-            dangerouslySetInnerHTML={{ __html: problem.passageHtml }}
+            dangerouslySetInnerHTML={{
+              __html: highlightText && highlightColor
+                ? injectHighlight(problem.passageHtml, highlightText, highlightColor)
+                : problem.passageHtml
+            }}
           />
         )}
       </div>

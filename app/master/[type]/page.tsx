@@ -8,6 +8,11 @@ import { BottomButton } from '@/components/ui/BottomButton'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import type { BossType, GeneratedProblem } from '@/lib/types'
 
+interface HighlightInfo {
+  keyText: string
+  keyJapanese: string
+}
+
 function MasterContent() {
   const params = useParams()
   const router = useRouter()
@@ -20,6 +25,8 @@ function MasterContent() {
   const [selectedLabel, setSelectedLabel] = useState<'A' | 'B' | 'C' | 'D' | null>(null)
   const [submitted, setSubmitted] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [highlightInfo, setHighlightInfo] = useState<HighlightInfo | null>(null)
+  const [loadingHighlight, setLoadingHighlight] = useState(false)
 
   if (!boss || !problem) {
     return (
@@ -35,25 +42,49 @@ function MasterContent() {
   async function handleSubmit() {
     if (!selectedLabel) return
     setSaving(true)
+    setLoadingHighlight(true)
     const correct = selectedLabel === challengeProblem.correctLabel
 
-    await fetch('/api/session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        bossType,
-        difficulty: challengeProblem.difficulty,
-        theme: challengeProblem.theme,
-        mode: 'challenge',
-        generatedQuestion: challengeProblem,
-        result: correct ? 'cleared' : 'wakaranai',
+    const [, highlightRes] = await Promise.all([
+      fetch('/api/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bossType,
+          difficulty: challengeProblem.difficulty,
+          theme: challengeProblem.theme,
+          mode: 'challenge',
+          generatedQuestion: challengeProblem,
+          result: correct ? 'cleared' : 'wakaranai',
+        }),
       }),
-    })
+      fetch('/api/highlight', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          passageHtml: challengeProblem.passageHtml,
+          questionText: challengeProblem.questionText,
+          correctLabel: challengeProblem.correctLabel,
+          choices: challengeProblem.choices,
+        }),
+      }),
+    ])
 
+    const highlightData = await highlightRes.json()
+    setHighlightInfo(highlightData)
     setSubmitted(true)
     setSaving(false)
+    setLoadingHighlight(false)
+  }
 
-    if (correct) router.push(`/cleared?bossType=${bossType}`)
+  function handleRetry() {
+    setSelectedLabel(null)
+    setSubmitted(false)
+    setHighlightInfo(null)
+  }
+
+  function handleWakaranai() {
+    router.push(`/wakaranai?bossType=${bossType}`)
   }
 
   return (
@@ -71,35 +102,77 @@ function MasterContent() {
         selectedLabel={selectedLabel}
         onSelect={submitted ? undefined : setSelectedLabel}
         revealAnswer={submitted}
+        highlightText={submitted && highlightInfo?.keyText ? highlightInfo.keyText : undefined}
+        highlightColor={isCorrect ? 'green' : 'pink'}
       />
 
-      {submitted && !isCorrect && (
-        <div className="rounded-2xl p-4" style={{ background: '#FFF0F0', border: '1.5px solid #E57373' }}>
-          <p className="text-sm font-bold" style={{ color: '#C62828' }}>惜しい！正解は {challengeProblem.correctLabel} だったよ。</p>
-          <p className="text-xs mt-1" style={{ color: '#787878' }}>もう一度チャレンジしてみる？</p>
+      {loadingHighlight && (
+        <div className="flex items-center gap-2 py-2">
+          <LoadingSpinner />
+          <p className="text-xs" style={{ color: '#787878' }}>根拠の文を確認中...</p>
         </div>
       )}
 
-      <div className="mt-auto space-y-3 pt-4">
+      {submitted && !loadingHighlight && highlightInfo?.keyText && (
+        <div
+          className="rounded-2xl p-4"
+          style={{
+            background: isCorrect ? '#F0FBF0' : '#FFF5F5',
+            border: `1.5px solid ${isCorrect ? '#4CAF50' : '#E57373'}`,
+          }}
+        >
+          {isCorrect ? (
+            <>
+              <p className="font-black text-base mb-2" style={{ color: '#2E7D32' }}>✨ 正解！</p>
+              <p className="text-xs font-bold mb-1" style={{ color: '#787878' }}>答えの根拠はこの文：</p>
+              <p className="text-sm italic leading-relaxed mb-2" style={{ color: '#1A1A1A' }}>{highlightInfo.keyText}</p>
+              <p className="text-xs leading-relaxed" style={{ color: '#787878' }}>（{highlightInfo.keyJapanese}）</p>
+              {problem.explanation && (
+                <p className="text-sm mt-3 pt-3 leading-relaxed whitespace-pre-wrap" style={{ color: '#1A1A1A', borderTop: '1px solid #C8E6C9' }}>{problem.explanation}</p>
+              )}
+            </>
+          ) : (
+            <>
+              <p className="font-black text-base mb-2" style={{ color: '#C62828' }}>惜しい！正解は {challengeProblem.correctLabel} だったよ。</p>
+              <p className="text-xs font-bold mb-1" style={{ color: '#787878' }}>答えの根拠はこの文：</p>
+              <p className="text-sm italic leading-relaxed mb-2" style={{ color: '#1A1A1A' }}>{highlightInfo.keyText}</p>
+              <p className="text-xs leading-relaxed" style={{ color: '#787878' }}>（{highlightInfo.keyJapanese}）</p>
+              {problem.explanation && (
+                <p className="text-sm mt-3 pt-3 leading-relaxed whitespace-pre-wrap" style={{ color: '#1A1A1A', borderTop: '1px solid #FFCDD2' }}>{problem.explanation}</p>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
+      {submitted && !loadingHighlight && !highlightInfo?.keyText && !isCorrect && (
+        <div className="rounded-2xl p-4" style={{ background: '#FFF0F0', border: '1.5px solid #E57373' }}>
+          <p className="text-sm font-bold" style={{ color: '#C62828' }}>惜しい！正解は {challengeProblem.correctLabel} だったよ。</p>
+          {problem.explanation && (
+            <p className="text-sm mt-2 leading-relaxed whitespace-pre-wrap" style={{ color: '#1A1A1A' }}>{problem.explanation}</p>
+          )}
+        </div>
+      )}
+
+      <div className="space-y-3 pt-2 pb-4">
         {!submitted ? (
           <BottomButton
-            label={saving ? '保存中...' : 'これが答え！'}
+            label={saving ? '確認中...' : 'これが答え！'}
             onClick={handleSubmit}
             disabled={!selectedLabel || saving}
           />
-        ) : !isCorrect ? (
+        ) : isCorrect ? (
           <>
-            <BottomButton
-              label="もう一度挑戦する"
-              onClick={() => { setSelectedLabel(null); setSubmitted(false) }}
-            />
-            <BottomButton
-              label="問題一覧に戻る"
-              onClick={() => router.push('/')}
-              variant="secondary"
-            />
+            <BottomButton label="問題一覧に戻る →" onClick={() => router.push('/')} />
+            <BottomButton label="もう一度練習する" onClick={() => router.push(`/boss/${bossType}/step2`)} variant="secondary" />
           </>
-        ) : null}
+        ) : (
+          <>
+            <BottomButton label="もう一度挑戦する" onClick={handleRetry} />
+            <BottomButton label="どこがわからないか確認する" onClick={handleWakaranai} variant="secondary" />
+            <BottomButton label="問題一覧に戻る" onClick={() => router.push('/')} variant="secondary" />
+          </>
+        )}
       </div>
     </main>
   )
