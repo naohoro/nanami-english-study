@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import type { BossType } from '@/lib/types'
 
-const VALID_BOSS_TYPES = ['vocab', 'grammar', 'conversation', 'chart', 'email', 'story', 'multi_source', 'outline'] as const
+const VALID_BOSS_TYPES = ['short_text', 'survey_blog', 'short_story', 'essay_edit', 'multi_doc', 'long_story', 'article_slides', 'essay_synthesis'] as const
 
 export async function PATCH(req: NextRequest) {
   const supabase = await createServerSupabaseClient()
