@@ -2,7 +2,7 @@
  * One-time seed script: generates sample problems via Claude API and inserts to Supabase.
  *
  * Run all:        npx tsx scripts/seed-problems.ts
- * Run one type:   BOSS_TYPE=vocab npx tsx scripts/seed-problems.ts
+ * Run one type:   BOSS_TYPE=short_text npx tsx scripts/seed-problems.ts
  *
  * Required env vars (from .env.local):
  *   NEXT_PUBLIC_SUPABASE_URL
@@ -26,14 +26,14 @@ const supabase = createClient(
 )
 
 const BOSS_THEMES: Record<string, string[]> = {
-  vocab:        ['daily_life', 'technology', 'community', 'environment'],
-  grammar:      ['business', 'daily_life', 'technology', 'community'],
-  conversation: ['daily_life', 'travel', 'community', 'business'],
-  chart:        ['technology', 'environment', 'business', 'community'],
-  email:        ['travel', 'business', 'daily_life', 'community'],
-  story:        ['daily_life', 'community', 'travel', 'environment'],
-  multi_source: ['technology', 'environment', 'business', 'community'],
-  outline:      ['technology', 'environment', 'community', 'daily_life'],
+  short_text:      ['travel', 'daily_life', 'community', 'business'],
+  survey_blog:     ['technology', 'environment', 'daily_life', 'community'],
+  short_story:     ['daily_life', 'community', 'travel', 'environment'],
+  essay_edit:      ['technology', 'environment', 'business', 'community'],
+  multi_doc:       ['travel', 'business', 'daily_life', 'community'],
+  long_story:      ['daily_life', 'community', 'travel', 'environment'],
+  article_slides:  ['technology', 'environment', 'business', 'community'],
+  essay_synthesis: ['technology', 'environment', 'business', 'community'],
 }
 
 const DIFFICULTY_LABELS = ['', '易しい', '標準以下', '標準', '標準以上', '難しい']
@@ -46,100 +46,103 @@ const themeMap: Record<string, string> = {
 
 function buildPrompt(bossType: string, difficulty: number, theme: string): string {
   const typeInstructions: Record<string, string> = {
-    vocab: `
-問題タイプ：共通テスト第1問型（発音・アクセント）
-以下のどちらかの形式で作成してください（交互に使ってください）：
-形式A（発音）：4つの単語の下線部の発音が他と異なるものを1つ選ぶ
-形式B（アクセント）：4つの単語のうち強勢の位置が他と異なるものを1つ選ぶ
+    short_text: `
+問題タイプ：共通テスト第1問型（短い実用文）
+- チラシ・告知・グループチャット・メモのいずれか1種類
+- 150語以内の短い実用文
+- 語彙レベル：高校3年生相当（CEFR A2〜B1が基本、B2単語は文脈ヒント付き）
+- 設問：本文の目的・条件・日時・場所に関する事実確認（4択）
+- 正解：本文に明記されている事実のみ
+- 誤答：本文に書いていないが「良さそう」に見える選択肢を1つ含める
+passageHtml形式（チラシ例）：<p><strong>[タイトル]</strong></p><p>[本文]</p>
+passageHtml形式（チャット例）：<p><strong>Group Chat: [グループ名]</strong></p><p>[名前1]: [発言]</p><p>[名前2]: [発言]</p>`,
 
-passageHtml形式（形式A）：
-<p>Select the word whose underlined part is pronounced differently from the others.</p>
-<p>A.&nbsp;<u>発音記号の部分</u>rest &nbsp; B.&nbsp;<u>e</u>very &nbsp; C.&nbsp;<u>e</u>ight &nbsp; D.&nbsp;<u>e</u>at</p>
+    survey_blog: `
+問題タイプ：共通テスト第2問型（ブログ記事またはアンケート＋コメント）
+- 形式A（ブログ）：200〜250語の段落構成ブログ記事（筆者の意見＋根拠＋具体例）
+- 形式B（アンケート）：アンケート結果の数値＋回答者のコメント3〜4件
+- 語彙レベル：高校3年生相当（CEFR A2〜B1が基本、B2単語は文脈ヒント付き）
+- 設問：筆者の意見・根拠・アンケート結果の事実確認（4択）
+passageHtml形式（ブログ）：<p>段落1</p><p>段落2</p><p>段落3</p>
+passageHtml形式（アンケート）：<p><strong>[タイトル]</strong></p><table border="1" style="border-collapse:collapse;width:100%;font-size:0.9em"><tr><th>項目</th><th>回答(%)</th></tr>...</table><p><strong>コメント</strong></p><p>[名前A]: [コメント]</p>`,
 
-passageHtml形式（形式B）：
-<p>Select the word whose stress (accent) is placed differently from the others.</p>
-<p>A.&nbsp;de-SIGN &nbsp; B.&nbsp;mo-MENT &nbsp; C.&nbsp;na-TION &nbsp; D.&nbsp;stu-DENT</p>
+    short_story: `
+問題タイプ：共通テスト第3問型（短編物語・時系列）
+- 200〜280語の短編物語（主人公が複数のイベントを経験する）
+- 語彙レベル：高校3年生相当（CEFR A2〜B1が基本、B2単語は文脈ヒント付き）
+- 時間・順序を示す表現を4〜5つ含める（yesterday, two days later, the following week 等）
+- 設問：本文中の出来事の正しい順序を選ぶ（4択）
+- 正解：本文の時間表現を正しく並べた選択肢
+- 誤答：出来事の順序が1〜2つ入れ替わっている選択肢を3つ
+passageHtml：<p>タグで段落区切り（3〜4段落）
+questionText例：「本文中の出来事を起きた順に並べたものとして最も適切なものを選べ」
+choicesは (1)→(2)→(3)→(4) の形式で出来事を並べた選択肢（A〜D）`,
 
-choicesは A/B/C/D に単語のみ（下線や音節区切りなし）
-- 正解は発音・アクセントのルールに基づき1つだけ正しいこと（確実に正解が明確）
-- trickHint：そのルール（例：-tion の前の音節にアクセントが来る）を1文で`,
+    essay_edit: `
+問題タイプ：共通テスト第4問型（エッセイ添削）
+- 生徒が書いたエッセイ（150〜200語、空所1か所）
+- 語彙レベル：高校3年生相当（CEFR A2〜B1が基本、B2単語は文脈ヒント付き）
+- 先生のコメント1〜2件（「具体例を追加」「理由を述べる」「対策を提案」等）
+- 設問：先生のコメントに基づき空所に入る最適な文を選ぶ（4択）
+- 正解：コメントの要求を正確に満たす文
+- 誤答：コメントに言及のない情報を含む文
+passageHtml形式：<p><strong>Student Essay</strong></p><p>[エッセイ本文（空所は _____ ）]</p><p><strong>Teacher's Comments</strong></p><p>Comment 1: [コメント]</p>`,
 
-    grammar: `
-問題タイプ：共通テスト第2問型（文法・語法の空所補充）
-- 空所のある英文1〜2文。空所に入る最適な語句を4択で選ぶ
-- 空所は①動詞の形（時制・態・不定詞・動名詞）②前置詞 ③接続詞・関係詞 のいずれか
-- passageHtmlは空所付き英文（空所は _____ で表す）
-- 誤答：品詞は正しいが時制・格・語法が間違うもの
-- questionText：「空所に入る最も適切なものを選べ」`,
+    multi_doc: `
+問題タイプ：共通テスト第5問型（複数文書）
+- 文書1（80〜120語）：チラシ・案内・告知のいずれか
+- 文書2（80〜120語）：申込フォーム・返信メール・補足情報のいずれか
+- 語彙レベル：高校3年生相当（CEFR A2〜B1が基本、B2単語は文脈ヒント付き）
+- 必ず具体的な数字（日付・料金・条件・定員等）を各文書に含める
+- 設問：両文書の情報を照合しないと解けない事実確認（4択）
+- 正解：文書1＋文書2の情報を組み合わせた結論
+- 誤答：片方の文書だけで導ける「半正解」選択肢を1つ含める
+passageHtml形式：<p><strong>Document 1: [タイトル]</strong></p><p>[文書1本文]</p><p><strong>Document 2: [タイトル]</strong></p><p>[文書2本文]</p>`,
 
-    conversation: `
-問題タイプ：共通テスト第3問型（会話文読解）
-- 4〜6往復の会話文。空所1か所に入る発言を4択で選ぶ
-- 空所は会話の自然な流れを妨げない位置に設定
-- passageHtml形式：
-  <p>A: "発言1"</p>
-  <p>B: "発言2"</p>
-  <p>A: "[&nbsp;&nbsp;&nbsp;&nbsp;]"</p>
-  <p>B: "続きの発言"</p>
-- 誤答：文脈に合わない返し・話題がズレる返し
-- questionText：「空所に入る最も適切なものを選べ」`,
-
-    chart: `
-問題タイプ：共通テスト第4問型（図表・グラフ読み取り）
-- HTML形式の表（<table>タグ使用）または棒グラフを文字で表現した資料
-- 具体的な数値・割合・順位を含む
-- 設問：表の数値や傾向について事実確認する問題（4択）
-- 誤答：表内の別の数値と混同しやすい選択肢を含める
-- passageHtml形式（テーブル例）：
-  <p><strong>[タイトル]</strong></p>
-  <table border="1" style="border-collapse:collapse;width:100%;font-size:0.9em">
-    <tr><th>項目</th><th>2022年</th><th>2023年</th><th>2024年</th></tr>
-    <tr><td>A</td><td>45%</td><td>52%</td><td>61%</td></tr>
-    <tr><td>B</td><td>30%</td><td>28%</td><td>25%</td></tr>
-  </table>
-  <p>出典：[架空の調査名]</p>`,
-
-    email: `
-問題タイプ：共通テスト第5問型（メールのやり取り）
-- メール1（100〜150語）：依頼・質問・状況報告のいずれか
-- メール2（100〜150語）：メール1への返信
-- 必ず具体的な数字（日付・時間・金額・数量のいずれか）を含める
-- 設問：メールの内容に基づく事実確認問題（4択）
-- 正解：メールの最後の一文または数字情報から直接導ける答え
-- 誤答：本文中の別の情報と紛らわしい選択肢を含める
-
-passageHtmlの形式（必ずこの形式でメール1とメール2の両方を含めること）：
-<p><strong>Email 1</strong></p><p>From: [送信者]<br>To: [宛先]<br>Subject: [件名]</p><p>[メール1本文]</p><p><strong>Email 2</strong></p><p>From: [送信者]<br>To: [宛先]<br>Subject: [件名]</p><p>[メール2本文]</p>`,
-
-    story: `
-問題タイプ：共通テスト第6問型（物語・長文読解）
-- 250〜350語の物語文または日記・ブログ形式のエッセイ
-- 登場人物の感情変化・行動の理由が明確に描かれていること
-- 感情語（worried / relieved / disappointed / surprised / proud 等）を最低2つ含める
+    long_story: `
+問題タイプ：共通テスト第6問型（長編物語）
+- 300〜380語の物語文（明確な感情変化のある主人公）
+- 語彙レベル：高校3年生相当（CEFR A2〜B1が基本、B2単語は文脈ヒント付き）
+- 感情語（worried / relieved / disappointed / proud / frustrated / grateful 等）を最低3つ含める
+- 感情の変化が明確な転換点を1か所以上含める
 - 設問：登場人物の心情・行動の理由を問う問題（4択）
-- 誤答：感情は近いが本文に根拠がない選択肢を含める
-- passageHtml：<p>タグで段落区切り（4〜5段落）`,
+- 正解：本文の感情語・行動描写に直接根拠がある選択肢
+- 誤答：感情は近いが本文に根拠がない選択肢を1〜2つ含める
+passageHtml：<p>タグで段落区切り（4〜5段落）`,
 
-    multi_source: `
-問題タイプ：共通テスト第7問型（複数資料の統合）
-- 資料1（100〜150語）：ウェブページ・パンフレット・案内文のいずれか
-- 資料2（100〜150語）：資料1に関連するが別視点の情報（FAQ・レビュー・補足案内等）
-- 必ず両方の資料を参照しないと解けない設問にすること
-- 設問：両資料を統合して答える事実確認問題（4択）
-- 正解：資料1＋資料2の情報を組み合わせた結論
-- 誤答：資料1のみ・資料2のみで導ける「半正解」選択肢を含める
-
+    article_slides: `
+問題タイプ：共通テスト第7問型（説明文＋スライド）
+- 説明文（400〜500語、5〜6段落）：科学・社会・テクノロジー等のテーマ
+- 語彙レベル：高校3年生相当（CEFR A2〜B1が基本、B2単語は文脈ヒント付き）
+- 発表スライド（空所1か所）：説明文の要点を整理したもの
+- 設問：スライドの空所に入る最適な語句・文を選ぶ（4択）
+- 正解：説明文の対応する段落から直接導ける内容
+- 誤答：本文に無い情報または別段落の情報
 passageHtml形式：
-<p><strong>Resource 1: [タイトル]</strong></p><p>[資料1本文]</p><p><strong>Resource 2: [タイトル]</strong></p><p>[資料2本文]</p>`,
+<p>[段落1]</p><p>[段落2]</p><p>[段落3]</p><p>[段落4]</p><p>[段落5]</p>
+<p><strong>Presentation Slides</strong></p>
+<p>Slide 1: [見出し1]<br>Slide 2: [見出し2] — [ ]<br>Slide 3: [見出し3]<br>Slide 4: [見出し4]</p>
+（スライドの空所は " — [ ]" で表す）`,
 
-    outline: `
-問題タイプ：共通テスト第8問型（複数資料→アウトライン完成）
-- 資料1（150〜200語）：問題・状況を描写する文章
-- 資料2（150〜200語）：解決策・提案を描写する文章
-- アウトライン（穴埋め形式）：資料1と2を統合した論理的帰結
-- 設問：アウトラインの空欄に入る最適な選択肢を選ぶ（4択）
-- 正解：資料1の問題＋資料2の解決策の論理的帰結
-- 誤答：「感情的に正しそうだが論理的でない」選択肢を1つ以上含める`,
+    essay_synthesis: `
+問題タイプ：共通テスト第8問型（複数意見→立場表明→アウトライン）
+- 異なる立場の意見文4件（各60〜100語）
+- 追加資料（説明文1件 100〜150語）
+- 語彙レベル：高校3年生相当（CEFR A2〜B1が基本、B2単語は文脈ヒント付き）
+- 設問1：提示された立場を支持する意見を4件中2件選ぶ（4択）
+- 設問2（メインの設問）：追加資料を読んでアウトラインの空所に入る最適な文を選ぶ（4択）
+- 正解（設問2）：立場の論理的帰結のみ
+- 誤答：感情的に正しそうだが論理的でない選択肢を1つ必ず含める
+passageHtml形式：
+<p><strong>▶ Opinions</strong></p>
+<p><strong>[名前1] ([属性])</strong><br>[意見1本文]</p>
+<p><strong>[名前2] ([属性])</strong><br>[意見2本文]</p>
+<p><strong>[名前3] ([属性])</strong><br>[意見3本文]</p>
+<p><strong>[名前4] ([属性])</strong><br>[意見4本文]</p>
+<p><strong>▶ Position: [立場の文]</strong></p>
+<p><strong>▶ Additional Source</strong></p><p>[追加資料本文]</p>
+<p><strong>▶ Essay Outline</strong></p>
+<p>Introduction: [前提]<br>Body: Reason 1: [確定内容] / Reason 2: [ ]<br>Conclusion: [結論]</p>`,
   }
 
   return `あなたは日本の共通テスト英語問題の専門家です。以下の仕様に厳密に従って問題を生成してください。
