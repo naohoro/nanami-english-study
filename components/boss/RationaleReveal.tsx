@@ -28,8 +28,8 @@ export function RationaleReveal({ rationale, bossIndex }: Props) {
           }}
         >
           <span>
-            <span className="display-italic" style={{ fontSize: 15, marginRight: 8 }}>Why</span>
-            なぜ第{bossIndex}問から攻めるのか
+            <span className="display-italic" style={{ fontSize: 15, marginRight: 8 }}>Points</span>
+            第{bossIndex}問に関する情報を確認する
           </span>
           <span style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--ink-3)' }}>OPEN ↓</span>
         </button>
