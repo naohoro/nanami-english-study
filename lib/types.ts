@@ -15,6 +15,8 @@ export type ProblemTheme =
   | 'community'
   | 'daily_life'
   | 'business'
+  | 'health_food'
+  | 'education'
 
 export type ProblemMode = 'answer_first' | 'challenge'
 
