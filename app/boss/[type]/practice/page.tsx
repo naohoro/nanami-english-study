@@ -8,6 +8,7 @@ import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import type { BossType, GeneratedProblem } from '@/lib/types'
 
 type QState = { selected: 'A' | 'B' | 'C' | 'D' | null; revealed: boolean }
+type QTranslation = { questionText: string; choices: Record<string, string> }
 
 export default function PracticePage() {
   const params = useParams()
@@ -20,6 +21,16 @@ export default function PracticePage() {
   const [error, setError] = useState<string | null>(null)
   const [qIdx, setQIdx] = useState(0) // 0-indexed
   const [qStates, setQStates] = useState<QState[]>([])
+
+  // Translation state — passage
+  const [passageJa, setPassageJa] = useState<string | null>(null)
+  const [passageTranslating, setPassageTranslating] = useState(false)
+  const [showPassageJa, setShowPassageJa] = useState(false)
+
+  // Translation state — per question
+  const [qTranslations, setQTranslations] = useState<Record<number, QTranslation>>({})
+  const [qShowJa, setQShowJa] = useState<Set<number>>(new Set())
+  const [qTranslating, setQTranslating] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     async function load() {
@@ -49,6 +60,44 @@ export default function PracticePage() {
   const allDone = qStates.every(s => s.revealed)
   const whisper = boss.trickSteps[qIdx % boss.trickSteps.length]
 
+  async function translatePassage() {
+    if (passageJa) { setShowPassageJa(v => !v); return }
+    if (!problem) return
+    setPassageTranslating(true)
+    try {
+      const res = await fetch('/api/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ passageHtml: problem.passageHtml }),
+      })
+      const data = await res.json()
+      setPassageJa(data.japanese)
+      setShowPassageJa(true)
+    } finally {
+      setPassageTranslating(false)
+    }
+  }
+
+  async function translateQuestion(qNum: number, questionText: string, choices: { label: string; text: string }[]) {
+    if (qTranslations[qNum]) {
+      setQShowJa(prev => { const next = new Set(prev); prev.has(qNum) ? next.delete(qNum) : next.add(qNum); return next })
+      return
+    }
+    setQTranslating(prev => new Set([...prev, qNum]))
+    try {
+      const res = await fetch('/api/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ passageHtml: questionText, choices }),
+      })
+      const data = await res.json()
+      setQTranslations(prev => ({ ...prev, [qNum]: { questionText: data.japanese ?? questionText, choices: data.choices ?? {} } }))
+      setQShowJa(prev => new Set([...prev, qNum]))
+    } finally {
+      setQTranslating(prev => { const next = new Set(prev); next.delete(qNum); return next })
+    }
+  }
+
   function select(label: 'A' | 'B' | 'C' | 'D') {
     if (qs.revealed) return
     setQStates(prev => prev.map((s, i) => i === qIdx ? { ...s, selected: label } : s))
@@ -74,15 +123,37 @@ export default function PracticePage() {
       </div>
 
       {/* passage */}
-      <div style={{ margin: '18px 20px 0', padding: '16px 18px', background: 'var(--surface)', borderLeft: '2px solid var(--rule)', fontFamily: 'var(--serif-en)', fontSize: 15, lineHeight: 1.75, color: 'var(--ink)' }}
-        dangerouslySetInnerHTML={{ __html: problem.passageHtml }}
-      />
+      <div style={{ margin: '18px 20px 0', background: 'var(--surface)', borderLeft: '2px solid var(--rule)' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '6px 10px 0' }}>
+          <button
+            onClick={translatePassage}
+            disabled={passageTranslating}
+            style={{ fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '0.05em', padding: '3px 10px', border: '1px solid var(--rule)', background: 'transparent', color: 'var(--ink-3)', cursor: 'pointer', opacity: passageTranslating ? 0.4 : 1 }}
+          >
+            {passageTranslating ? '翻訳中...' : showPassageJa ? 'EN' : 'JP'}
+          </button>
+        </div>
+        {showPassageJa && passageJa ? (
+          <div style={{ padding: '10px 18px 16px', fontFamily: 'var(--mincho)', fontSize: 14, lineHeight: 1.85, color: 'var(--ink)', whiteSpace: 'pre-line' }}>{passageJa}</div>
+        ) : (
+          <div style={{ padding: '10px 18px 16px', fontFamily: 'var(--serif-en)', fontSize: 15, lineHeight: 1.75, color: 'var(--ink)' }} dangerouslySetInnerHTML={{ __html: problem.passageHtml }} />
+        )}
+      </div>
 
       {/* question */}
       <div style={{ padding: '20px 20px 0' }}>
-        <h2 className="display" style={{ fontSize: 19, lineHeight: 1.3, color: 'var(--ink)', letterSpacing: '-0.01em', fontVariationSettings: '"opsz" 144' }}>
-          {q.questionText}
-        </h2>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+          <h2 className="display" style={{ flex: 1, fontSize: 19, lineHeight: 1.3, color: 'var(--ink)', letterSpacing: '-0.01em', fontVariationSettings: '"opsz" 144' }}>
+            {qShowJa.has(q.number) && qTranslations[q.number] ? qTranslations[q.number].questionText : q.questionText}
+          </h2>
+          <button
+            onClick={() => translateQuestion(q.number, q.questionText, q.choices)}
+            disabled={qTranslating.has(q.number)}
+            style={{ flexShrink: 0, fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '0.05em', padding: '3px 10px', border: '1px solid var(--rule)', background: 'transparent', color: 'var(--ink-3)', cursor: 'pointer', opacity: qTranslating.has(q.number) ? 0.4 : 1, marginTop: 3 }}
+          >
+            {qTranslating.has(q.number) ? '...' : qShowJa.has(q.number) ? 'EN' : 'JP'}
+          </button>
+        </div>
 
         {/* whisper */}
         <aside style={{ marginTop: 12, padding: '10px 14px', borderLeft: '2px solid var(--accent)', background: 'transparent' }}>
@@ -96,6 +167,9 @@ export default function PracticePage() {
             const isSel = qs.selected === c.label
             const isCorrectChoice = qs.revealed && c.label === q.correctLabel
             const isWrong = qs.revealed && isSel && !isCorrect
+            const choiceText = qShowJa.has(q.number) && qTranslations[q.number]?.choices[c.label]
+              ? qTranslations[q.number].choices[c.label]
+              : c.text
             return (
               <button
                 key={c.label}
@@ -103,7 +177,7 @@ export default function PracticePage() {
                 className={`hy-choice${isSel && !qs.revealed ? ' selected' : ''}${isCorrectChoice ? ' correct' : ''}${isWrong ? ' wrong' : ''}`}
               >
                 <span className="display-italic" style={{ fontSize: 16, color: 'var(--accent)', textAlign: 'right' }}>{c.label.toLowerCase()}.</span>
-                <span>{c.text}</span>
+                <span>{choiceText}</span>
                 <span>{isCorrectChoice ? '✓' : ''}</span>
               </button>
             )
