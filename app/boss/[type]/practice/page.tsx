@@ -6,6 +6,7 @@ import { BOSS_CONFIGS } from '@/lib/boss-data'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import type { BossType, GeneratedProblem } from '@/lib/types'
+import { AiTeacherChat } from '@/components/ai-teacher/AiTeacherChat'
 
 type QState = { selected: 'A' | 'B' | 'C' | 'D' | null; revealed: boolean }
 type QTranslation = { questionText: string; choices: Record<string, string> }
@@ -193,7 +194,7 @@ export default function PracticePage() {
         )}
 
         {/* actions */}
-        <div style={{ padding: '20px 0 32px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ padding: '20px 0 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
           {!qs.revealed ? (
             <button
               onClick={reveal}
@@ -215,6 +216,18 @@ export default function PracticePage() {
               <span className="arr">→</span>
             </button>
           )}
+        </div>
+
+        {/* AI先生チャット */}
+        <div style={{ paddingBottom: 32 }}>
+          <AiTeacherChat
+            context={{
+              pageType: 'problem',
+              bossType,
+              passageHtml: problem.passageHtml,
+              questionText: q.questionText,
+            }}
+          />
         </div>
       </div>
     </main>
