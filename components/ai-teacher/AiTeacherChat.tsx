@@ -83,81 +83,117 @@ export function AiTeacherChat({ context }: AiTeacherChatProps) {
     )
   }
 
-  return (
-    <div style={{ border: '1px solid var(--ink)', padding: '1rem' }}>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-sm font-medium" style={{ color: 'var(--ink)', fontFamily: 'var(--sans)' }}>
-          <span style={{ color: 'var(--accent)' }}>✦</span> AI先生
-        </span>
-        <button
-          onClick={handleClose}
-          className="text-xs transition-opacity active:opacity-60"
-          style={{ color: 'var(--ink-3)', fontFamily: 'var(--sans)' }}
-        >
-          ▲ 閉じる
-        </button>
-      </div>
+  const hasMessages = messages.length > 0
 
-      {/* Messages */}
-      <div className="space-y-3 mb-4" style={{ maxHeight: '240px', overflowY: 'auto' }}>
-        {messages.map((msg, i) => (
-          <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div
-              className="text-sm leading-relaxed"
-              style={{
+  return (
+    <div style={{
+      borderRadius: 16,
+      overflow: 'hidden',
+      border: '1px solid rgba(0,0,0,0.12)',
+      boxShadow: '0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06)',
+      background: '#fff',
+    }}>
+      {/* メッセージ履歴（あるときだけ表示） */}
+      {hasMessages && (
+        <div style={{ padding: '16px 16px 0', display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 240, overflowY: 'auto' }}>
+          {messages.map((msg, i) => (
+            <div key={i} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
+              <div style={{
                 maxWidth: '85%',
-                padding: '0.5rem 0.75rem',
-                background: msg.role === 'assistant' ? 'var(--paper-2)' : 'var(--ink)',
-                color: msg.role === 'assistant' ? 'var(--ink)' : 'var(--paper)',
+                padding: '8px 12px',
+                borderRadius: msg.role === 'user' ? '14px 14px 3px 14px' : '14px 14px 14px 3px',
+                background: msg.role === 'user' ? '#1A1A1A' : '#F4F4F4',
+                color: msg.role === 'user' ? '#fff' : '#1A1A1A',
                 fontFamily: 'var(--mincho)',
+                fontSize: 13,
+                lineHeight: 1.75,
+              }}>
+                {msg.content}
+              </div>
+            </div>
+          ))}
+          {loading && (
+            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+              <div style={{
+                padding: '8px 12px',
+                borderRadius: '14px 14px 14px 3px',
+                background: '#F4F4F4',
+                color: 'rgba(0,0,0,0.35)',
+                fontFamily: 'var(--mincho)',
+                fontSize: 13,
+              }}>
+                考えています...
+              </div>
+            </div>
+          )}
+          <div ref={bottomRef} />
+        </div>
+      )}
+
+      {/* 入力エリア — Claude風 */}
+      <div style={{ padding: hasMessages ? '12px 12px 10px' : '4px 12px 10px' }}>
+        <div style={{
+          background: '#F9F9F9',
+          borderRadius: 12,
+          border: '1px solid rgba(0,0,0,0.09)',
+          padding: '10px 12px 8px',
+        }}>
+          <input
+            type="text"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
+            placeholder="なにが分からない？"
+            disabled={loading}
+            autoFocus={open}
+            style={{
+              width: '100%',
+              background: 'transparent',
+              border: 'none',
+              outline: 'none',
+              fontSize: 14,
+              color: '#1A1A1A',
+              fontFamily: 'var(--mincho)',
+              lineHeight: 1.5,
+            }}
+          />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
+            <button
+              onClick={handleClose}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: 11,
+                color: 'rgba(0,0,0,0.35)',
+                fontFamily: 'var(--sans)',
+                padding: 0,
               }}
             >
-              {msg.content}
-            </div>
+              閉じる
+            </button>
+            <button
+              onClick={handleSend}
+              disabled={!input.trim() || loading}
+              className="transition-opacity active:opacity-70 disabled:opacity-25"
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: '50%',
+                background: '#1A1A1A',
+                color: '#fff',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: 13,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              ↑
+            </button>
           </div>
-        ))}
-        {loading && (
-          <div className="flex justify-start">
-            <div className="text-sm" style={{ padding: '0.5rem 0.75rem', background: 'var(--paper-2)', color: 'var(--ink-3)', fontFamily: 'var(--mincho)' }}>
-              考えています...
-            </div>
-          </div>
-        )}
-        <div ref={bottomRef} />
-      </div>
-
-      {/* Input */}
-      <div className="flex items-center gap-2">
-        <input
-          type="text"
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
-          placeholder="なにが分からない？"
-          disabled={loading}
-          className="flex-1 bg-transparent outline-none text-sm"
-          style={{
-            borderBottom: '1px solid var(--ink)',
-            paddingBottom: '0.25rem',
-            color: 'var(--ink)',
-            fontFamily: 'var(--mincho)',
-          }}
-        />
-        <button
-          onClick={handleSend}
-          disabled={!input.trim() || loading}
-          className="flex items-center justify-center transition-opacity active:opacity-60 disabled:opacity-30"
-          style={{
-            width: '28px',
-            height: '28px',
-            background: 'var(--ink)',
-            color: 'var(--paper)',
-            flexShrink: 0,
-          }}
-        >
-          ↑
-        </button>
+        </div>
       </div>
     </div>
   )
