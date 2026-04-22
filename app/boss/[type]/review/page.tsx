@@ -42,10 +42,14 @@ export default function ReviewPage() {
       <TrickSteps steps={boss.trickSteps} />
 
       {boss.example && (
-        <div style={{ margin: '0 20px 20px', padding: '16px 18px', background: 'var(--surface)', borderLeft: '2px solid var(--accent-2)' }}>
+        <div style={{ margin: '0 20px 20px' }}>
           <div className="mono-kicker" style={{ marginBottom: 8 }}>EXAMPLE</div>
-          <p className="passage-english" style={{ fontSize: 14, color: 'var(--ink)' }}>{boss.example.en}</p>
-          <p className="font-mincho" style={{ marginTop: 8, fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.7 }}>{boss.example.ja}</p>
+          <p className="font-mincho" style={{ fontSize: 12, color: 'var(--ink-3)', marginBottom: 10, lineHeight: 1.6 }}>{boss.example.scenario}</p>
+          <div style={{ background: 'var(--surface)', borderLeft: '2px solid var(--accent-2)', padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <p className="passage-english" style={{ fontSize: 14, color: 'var(--ink)', lineHeight: 1.7 }}>{boss.example.en}</p>
+            <p className="font-mincho" style={{ fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.65 }}>{boss.example.questionJa}</p>
+          </div>
+          <p className="font-mincho" style={{ marginTop: 10, fontSize: 13, color: 'var(--ink-3)', lineHeight: 1.65 }}>{boss.example.ja}</p>
         </div>
       )}
 

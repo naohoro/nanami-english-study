@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 interface TrickPanelProps {
   trick: string
   steps: string[]
-  example?: { en: string; ja: string }
+  example?: { scenario: string; en: string; questionJa: string; ja: string }
 }
 
 const ROMAN = ['i', 'ii', 'iii', 'iv', 'v']
@@ -43,8 +43,12 @@ export function TrickPanel({ trick, steps, example }: TrickPanelProps) {
       {example && (
         <div style={{ padding: '20px 0' }}>
           <div className="mono-kicker" style={{ marginBottom: 12 }}>EXAMPLE</div>
-          <p className="passage-english" style={{ fontSize: 14, color: 'var(--ink)', lineHeight: 1.7 }}>{example.en}</p>
-          <p className="font-mincho" style={{ marginTop: 8, fontSize: 13, color: 'var(--ink-3)', lineHeight: 1.65 }}>→ {example.ja}</p>
+          <p className="font-mincho" style={{ fontSize: 12, color: 'var(--ink-3)', marginBottom: 10, lineHeight: 1.6 }}>{example.scenario}</p>
+          <div style={{ background: 'var(--surface)', borderLeft: '2px solid var(--rule)', padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <p className="passage-english" style={{ fontSize: 14, color: 'var(--ink)', lineHeight: 1.7 }}>{example.en}</p>
+            <p className="font-mincho" style={{ fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.65 }}>{example.questionJa}</p>
+          </div>
+          <p className="font-mincho" style={{ marginTop: 10, fontSize: 13, color: 'var(--ink-3)', lineHeight: 1.65 }}>{example.ja}</p>
         </div>
       )}
     </div>

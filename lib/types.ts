@@ -99,7 +99,7 @@ export interface BossConfig {
   timeLimit: number  // seconds
   trick: string
   trickSteps: string[]
-  example?: { en: string; ja: string }
+  example?: { scenario: string; en: string; questionJa: string; ja: string }
   themes: ProblemTheme[]
   rationale?: BossRationale
 }
