@@ -43,12 +43,18 @@ export function TrickPanel({ trick, steps, example }: TrickPanelProps) {
       {example && (
         <div style={{ padding: '20px 0' }}>
           <div className="mono-kicker" style={{ marginBottom: 12 }}>EXAMPLE</div>
-          <p className="font-mincho" style={{ fontSize: 12, color: 'var(--ink-3)', marginBottom: 10, lineHeight: 1.6 }}>{example.scenario}</p>
-          <div style={{ background: 'var(--surface)', borderLeft: '2px solid var(--rule)', padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <p className="passage-english" style={{ fontSize: 14, color: 'var(--ink)', lineHeight: 1.7 }}>{example.en}</p>
-            <p className="font-mincho" style={{ fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.65 }}>{example.questionJa}</p>
+          <p className="font-mincho" style={{ fontSize: 13, color: 'var(--ink-2)', marginBottom: 12, lineHeight: 1.7 }}>{example.scenario}</p>
+          <div style={{ background: 'var(--surface)', borderLeft: '2px solid var(--rule)', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <p className="passage-english" style={{ fontSize: 14, color: 'var(--ink)', lineHeight: 1.75 }}>{example.en}</p>
+            <p className="font-mincho" style={{ fontSize: 13, color: 'var(--ink)', lineHeight: 1.7 }}>
+              <span style={{ fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '0.06em', color: 'var(--ink-3)', marginRight: 6 }}>日本語訳</span>
+              {example.questionJa.replace(/^→\s*/, '')}
+            </p>
           </div>
-          <p className="font-mincho" style={{ marginTop: 10, fontSize: 13, color: 'var(--ink-3)', lineHeight: 1.65 }}>{example.ja}</p>
+          <p className="font-mincho" style={{ marginTop: 12, fontSize: 14, color: 'var(--ink)', lineHeight: 1.75 }}>
+            <span style={{ fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '0.06em', color: 'var(--ink-3)', marginRight: 6 }}>解き方</span>
+            {example.ja.replace(/^→\s*/, '')}
+          </p>
         </div>
       )}
     </div>
