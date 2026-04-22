@@ -131,7 +131,7 @@ export function AiTeacherChat({ context }: AiTeacherChatProps) {
       )}
 
       {/* 入力エリア — Claude風 */}
-      <div style={{ padding: hasMessages ? '12px 12px 10px' : '4px 12px 10px' }}>
+      <div style={{ padding: '10px 12px 12px' }}>
         <div style={{
           background: '#F9F9F9',
           borderRadius: 12,
@@ -142,10 +142,9 @@ export function AiTeacherChat({ context }: AiTeacherChatProps) {
             type="text"
             value={input}
             onChange={e => setInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
+            onKeyDown={e => e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing && handleSend()}
             placeholder="なにが分からない？"
             disabled={loading}
-            autoFocus={open}
             style={{
               width: '100%',
               background: 'transparent',
@@ -157,7 +156,7 @@ export function AiTeacherChat({ context }: AiTeacherChatProps) {
               lineHeight: 1.5,
             }}
           />
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 6 }}>
             <button
               onClick={handleClose}
               style={{
