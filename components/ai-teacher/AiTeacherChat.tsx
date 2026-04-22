@@ -102,9 +102,9 @@ export function AiTeacherChat({ context }: AiTeacherChatProps) {
                 maxWidth: '85%',
                 padding: '8px 12px',
                 borderRadius: msg.role === 'user' ? '14px 14px 3px 14px' : '14px 14px 14px 3px',
-                background: msg.role === 'user' ? '#1A1A1A' : '#F4F4F4',
-                color: msg.role === 'user' ? '#fff' : '#1A1A1A',
-                fontFamily: 'var(--mincho)',
+                background: msg.role === 'user' ? '#B5EA4A' : '#F4F4F4',
+                color: '#1A1A1A',
+                fontFamily: 'var(--sans)',
                 fontSize: 13,
                 lineHeight: 1.75,
               }}>
@@ -119,7 +119,7 @@ export function AiTeacherChat({ context }: AiTeacherChatProps) {
                 borderRadius: '14px 14px 14px 3px',
                 background: '#F4F4F4',
                 color: 'rgba(0,0,0,0.35)',
-                fontFamily: 'var(--mincho)',
+                fontFamily: 'var(--sans)',
                 fontSize: 13,
               }}>
                 考えています...
@@ -152,7 +152,7 @@ export function AiTeacherChat({ context }: AiTeacherChatProps) {
               outline: 'none',
               fontSize: 14,
               color: '#1A1A1A',
-              fontFamily: 'var(--mincho)',
+              fontFamily: 'var(--sans)',
               lineHeight: 1.5,
             }}
           />
