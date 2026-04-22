@@ -62,17 +62,23 @@ export function AiTeacherChat({ context }: AiTeacherChatProps) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 text-sm transition-opacity active:opacity-60"
+        className="flex items-center justify-center gap-2 w-full transition-all active:scale-95"
         style={{
-          border: '1px solid var(--ink)',
-          padding: '0.5rem 1rem',
-          color: 'var(--ink)',
+          background: 'linear-gradient(135deg, #1A1A1A 0%, #3D2B00 100%)',
+          border: '2px solid #C8922A',
+          padding: '0.75rem 1.25rem',
+          color: '#F5DFA0',
           fontFamily: 'var(--sans)',
-          letterSpacing: '0.01em',
+          fontSize: 14,
+          fontWeight: 600,
+          letterSpacing: '0.04em',
+          boxShadow: '0 2px 12px rgba(200,146,42,0.25)',
+          borderRadius: 0,
         }}
       >
-        <span style={{ color: 'var(--accent)' }}>✦</span>
+        <span style={{ fontSize: 16 }}>✦</span>
         AI先生に質問する
+        <span style={{ fontSize: 11, opacity: 0.7, fontWeight: 400 }}>→</span>
       </button>
     )
   }
@@ -95,11 +101,6 @@ export function AiTeacherChat({ context }: AiTeacherChatProps) {
 
       {/* Messages */}
       <div className="space-y-3 mb-4" style={{ maxHeight: '240px', overflowY: 'auto' }}>
-        {messages.length === 0 && (
-          <p className="text-sm" style={{ color: 'var(--ink-3)', fontFamily: 'var(--mincho)' }}>
-            問題について気になることを聞いてみてください。
-          </p>
-        )}
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div
