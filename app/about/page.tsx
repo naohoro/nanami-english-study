@@ -2,18 +2,16 @@
 
 import Link from 'next/link'
 import { BOSS_CONFIGS } from '@/lib/boss-data'
+import { Breadcrumb } from '@/components/ui/Breadcrumb'
 
 const BOSS_TABLE = Object.values(BOSS_CONFIGS).sort((a, b) => a.section - b.section)
 
 export default function AboutPage() {
   return (
     <main style={{ flex: 1 }}>
-      {/* header */}
-      <div style={{ padding: '28px 20px 24px', borderBottom: '1px solid var(--rule)' }}>
-        <Link href="/" style={{ fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--ink-3)', textDecoration: 'none', letterSpacing: '0.05em' }}>
-          ← MAP
-        </Link>
-        <div className="mono-kicker" style={{ marginTop: 16 }}>ABOUT</div>
+      <Breadcrumb crumbs={[{ label: 'MAP', href: '/' }, { label: 'ABOUT' }]} />
+      <div style={{ padding: '20px 20px 24px', borderBottom: '1px solid var(--rule)' }}>
+        <div className="mono-kicker">ABOUT</div>
         <h1
           className="display"
           style={{ marginTop: 10, fontSize: 34, lineHeight: 1.1, color: 'var(--ink)', fontVariationSettings: '"opsz" 144' }}

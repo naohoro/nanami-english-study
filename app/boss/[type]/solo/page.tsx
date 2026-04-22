@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { BOSS_CONFIGS } from '@/lib/boss-data'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
+import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import type { BossType, GeneratedProblem } from '@/lib/types'
 
 export default function SoloPage() {
@@ -109,11 +110,8 @@ export default function SoloPage() {
 
   return (
     <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
-      {/* header */}
-      <div style={{ padding: '20px 20px 0' }}>
-        <button onClick={() => router.push(`/boss/${bossType}/practice`)} style={{ fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--ink-3)', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.05em', marginBottom: 14 }}>
-          ← STEP 2
-        </button>
+      <Breadcrumb crumbs={[{ label: 'MAP', href: '/' }, { label: 'STEP 1', href: `/boss/${bossType}` }, { label: 'STEP 2', href: `/boss/${bossType}/practice` }, { label: 'STEP 3' }]} />
+      <div style={{ padding: '16px 20px 0' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div className="mono-kicker">STEP 3 / 3 — SOLO</div>
           <div className="mono-kicker tabular" style={{ color: 'var(--ink-3)' }}>Q{qIdx + 1} / {totalQ}</div>

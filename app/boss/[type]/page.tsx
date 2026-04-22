@@ -5,6 +5,7 @@ import { BOSS_CONFIGS } from '@/lib/boss-data'
 import { TrickPanel } from '@/components/boss/TrickPanel'
 import { RationaleReveal } from '@/components/boss/RationaleReveal'
 import { BottomButton } from '@/components/ui/BottomButton'
+import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import type { BossType } from '@/lib/types'
 
 export default function Step1Page() {
@@ -23,23 +24,8 @@ export default function Step1Page() {
 
   return (
     <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-      <div style={{ padding: '28px 20px 20px' }}>
-        <button
-          onClick={() => router.push('/')}
-          style={{
-            marginBottom: 16,
-            fontFamily: 'var(--mono)',
-            fontSize: 10,
-            color: 'var(--ink-3)',
-            background: 'transparent',
-            border: 'none',
-            cursor: 'pointer',
-            padding: 0,
-            letterSpacing: '0.05em',
-          }}
-        >
-          ← MAP
-        </button>
+      <Breadcrumb crumbs={[{ label: 'MAP', href: '/' }, { label: 'STEP 1' }]} />
+      <div style={{ padding: '20px 20px 16px' }}>
         <div className="mono-kicker">STEP 1 / 3 — READ THE TRICK</div>
         <h1
           className="display"

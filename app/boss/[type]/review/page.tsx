@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { BOSS_CONFIGS } from '@/lib/boss-data'
 import { TrickSteps } from '@/components/boss/TrickSteps'
 import { RationaleReveal } from '@/components/boss/RationaleReveal'
+import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import type { BossType } from '@/lib/types'
 
 export default function ReviewPage() {
@@ -20,13 +21,8 @@ export default function ReviewPage() {
 
   return (
     <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-      <div style={{ padding: '28px 20px 20px' }}>
-        <button
-          onClick={() => router.push(`/boss/${bossType}/cleared`)}
-          style={{ fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--ink-3)', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.05em', marginBottom: 16 }}
-        >
-          ← CLEARED
-        </button>
+      <Breadcrumb crumbs={[{ label: 'MAP', href: '/' }, { label: 'CLEARED', href: `/boss/${bossType}/cleared` }, { label: 'REVIEW' }]} />
+      <div style={{ padding: '20px 20px 16px' }}>
         <div className="mono-kicker">TRICK REVIEW</div>
         <h1
           className="display"
