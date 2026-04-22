@@ -176,6 +176,42 @@ html, body {
   border-top: 1px solid var(--ink);
 }
 
+/* ─── Lesson ────────────────────────────────────────────────── */
+.hy-hero {
+  padding: 26px 20px 24px;
+  border-bottom: 1px solid var(--rule);
+}
+.hy-hero .eye {
+  font-family: var(--mono); font-size: 10px; color: var(--accent);
+  text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 14px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.hy-hero .eye::after {
+  content: ''; flex: 1; height: 1px; background: var(--accent); opacity: 0.35;
+  margin-left: 10px;
+}
+.hy-hd {
+  font-family: var(--display); font-weight: 400; font-size: 38px;
+  line-height: 1.08; letter-spacing: -0.025em; color: var(--ink);
+  font-variation-settings: "opsz" 144; padding-bottom: 4px;
+}
+.hy-hd em { font-style: italic; font-weight: 400; color: var(--accent); }
+.hy-sub {
+  margin-top: 20px; font-family: var(--sans); font-size: 14px;
+  line-height: 1.5; color: var(--ink-2);
+}
+.hy-sub b { color: var(--ink); font-weight: 500; }
+.hy-section {
+  padding: 22px 20px 12px;
+  display: grid; grid-template-columns: auto 1fr auto;
+  gap: 14px; align-items: baseline;
+  border-bottom: 1px solid var(--rule-soft);
+  font-family: var(--mono); font-size: 10px;
+}
+.hy-section .idx { color: var(--accent); letter-spacing: 0.04em; }
+.hy-section .t { color: var(--ink); font-weight: 500; }
+.hy-section .meta { color: var(--ink-3); }
+
 /* ─── Cleared ───────────────────────────────────────────────── */
 .hy-cleared {
   display: flex;

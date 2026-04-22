@@ -6,6 +6,8 @@ import { HybridBar } from '@/components/map/HybridBar'
 import { ProgressBanner } from '@/components/map/ProgressBanner'
 import { BossCard } from '@/components/map/BossCard'
 import { AiTeacherChat } from '@/components/ai-teacher/AiTeacherChat'
+import { LessonEntryCard } from '@/components/lesson/LessonEntryCard'
+import { LESSON_CATEGORIES } from '@/lib/lesson-data'
 import type { BossType, MasteryStatus } from '@/lib/types'
 
 async function getPageData() {
@@ -77,6 +79,8 @@ export default async function MapPage() {
           </div>
           <span style={{ fontFamily: 'var(--display)', fontStyle: 'italic', fontSize: 18, color: 'var(--accent-2)' }}>→</span>
         </Link>
+
+        <LessonEntryCard done={0} total={LESSON_CATEGORIES.reduce((s, c) => s + c.cards.length, 0)} needsReview={false} />
 
         <div>
           {bosses.map((boss) => {
