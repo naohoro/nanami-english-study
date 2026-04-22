@@ -6,6 +6,7 @@ import { BOSS_CONFIGS } from '@/lib/boss-data'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import type { BossType, GeneratedProblem } from '@/lib/types'
+import { AiTeacherChat } from '@/components/ai-teacher/AiTeacherChat'
 
 export default function SoloPage() {
   const params = useParams()
@@ -158,8 +159,20 @@ export default function SoloPage() {
           })}
         </div>
 
+        {/* AI先生チャット */}
+        <div style={{ paddingBottom: 16 }}>
+          <AiTeacherChat
+            context={{
+              pageType: 'problem',
+              bossType,
+              passageHtml: problem.passageHtml,
+              questionText: q.questionText,
+            }}
+          />
+        </div>
+
         {/* actions */}
-        <div style={{ padding: '20px 0 32px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ padding: '0 0 32px', display: 'flex', flexDirection: 'column', gap: 10 }}>
           {qIdx < totalQ - 1 ? (
             <button
               onClick={() => setQIdx(i => i + 1)}

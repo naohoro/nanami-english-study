@@ -6,6 +6,7 @@ import { TrickSteps } from '@/components/boss/TrickSteps'
 import { RationaleReveal } from '@/components/boss/RationaleReveal'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import type { BossType } from '@/lib/types'
+import { AiTeacherChat } from '@/components/ai-teacher/AiTeacherChat'
 
 export default function ReviewPage() {
   const params = useParams()
@@ -48,7 +49,11 @@ export default function ReviewPage() {
         </div>
       )}
 
-      <div style={{ padding: '8px 20px 40px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ padding: '0 20px 16px' }}>
+        <AiTeacherChat context={{ pageType: 'problem', bossType }} />
+      </div>
+
+      <div style={{ padding: '0 20px 40px', display: 'flex', flexDirection: 'column', gap: 10 }}>
         <button onClick={() => router.push(`/boss/${bossType}/practice`)} className="hy-btn full">
           <span>もう一度練習する</span>
           <span className="arr">→</span>
