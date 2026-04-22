@@ -9,11 +9,24 @@ function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
 }
 
+const EXAM_FORMAT = `【共通テスト英語リーディングの出題形式（2021〜2026年度）】
+発音・アクセント問題はセンター試験の形式であり、共通テストには存在しない。
+第1問（short_text）: お知らせ・チラシ・メモなどの短い実用文。設問は内容一致や目的把握。
+第2問（survey_blog）: Webアンケート・ブログ・複数の短文。情報を比較・整理する問題。
+第3問（short_story）: 出来事の順序・因果関係を問う短い物語。
+第4問（essay_edit）: 英文エッセイの図表・要約・穴埋め。
+第5問（multi_doc）: 複数の文書を読み比べる問題。
+第6問（long_story）: 長めの物語・エッセイ。
+第7問（article_slides）: 記事とスライドの組み合わせ。スライドの空欄補充が中心。
+第8問（essay_synthesis）: 複数の意見文を統合して自分の意見を判断する最高難度の大問。`
+
 function buildSystemPrompt(context: AiTeacherContext, recentLogs: string[]): string {
   const base = `あなたは「AI先生」です。共通テスト英語を勉強している高校生をサポートします。
 必ず日本語で答えてください。250文字以内で簡潔に答えてください。
 答えを直接教えるのではなく、考え方のヒントを与えてください。
-【絶対禁止】マークダウン記法（**太字**・番号リスト・箇条書き・見出し等）は使わない。絵文字も使わない。名前で呼びかけない。普通の会話文で書く。`
+【絶対禁止】マークダウン記法（**太字**・番号リスト・箇条書き・見出し等）は使わない。絵文字も使わない。名前で呼びかけない。普通の会話文で書く。
+
+${EXAM_FORMAT}`
 
   const logSection = recentLogs.length > 0
     ? `\n\nこの生徒の最近の学習メモ:\n${recentLogs.map(l => `- ${l}`).join('\n')}`
@@ -22,7 +35,12 @@ function buildSystemPrompt(context: AiTeacherContext, recentLogs: string[]): str
   if (context.pageType === 'problem' && context.passageHtml) {
     const passage = stripHtml(context.passageHtml)
     const question = context.questionText ? `\n設問: ${context.questionText}` : ''
-    return `${base}${logSection}\n\n今取り組んでいる問題:\n本文: ${passage.slice(0, 800)}${question}`
+    const section = context.bossType ? `\n取り組んでいる大問: ${context.bossType}` : ''
+    return `${base}${logSection}${section}\n\n今取り組んでいる問題:\n本文: ${passage.slice(0, 800)}${question}`
+  }
+
+  if (context.pageType === 'problem' && context.bossType) {
+    return `${base}${logSection}\n\n今学習している大問: ${context.bossType}。この大問の解き方や特徴について質問に答えてください。`
   }
 
   return `${base}${logSection}\n\n今は共通テスト英語の学習マップページにいます。共通テスト英語全般について答えてください。`
