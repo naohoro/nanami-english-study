@@ -12,9 +12,10 @@ type Props = {
   points: number
   trickSummary: string
   status: BossStatus
+  level?: number
 }
 
-export function BossCard({ index, type, name, points, trickSummary, status }: Props) {
+export function BossCard({ index, type, name, points, trickSummary, status, level = 1 }: Props) {
   const isLocked = status === 'locked'
   const isCleared = status === 'cleared'
 
@@ -58,20 +59,22 @@ export function BossCard({ index, type, name, points, trickSummary, status }: Pr
         </div>
       </div>
 
-      <div style={{ textAlign: 'right' }}>
-        <div className="tabular" style={{ fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--ink-3)' }}>
-          {points} pts
+      <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div className="tabular" style={{ fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--ink-3)' }}>
+            {points} pts
+          </div>
+          <div style={{
+            padding: '2px 7px',
+            border: `1px solid ${level >= 5 ? 'var(--accent)' : 'var(--rule)'}`,
+            background: level >= 5 ? 'var(--accent)' : 'transparent',
+          }}>
+            <span style={{ fontFamily: 'var(--mono)', fontSize: 9, letterSpacing: '0.06em', color: level >= 5 ? 'var(--paper)' : 'var(--ink-2)' }}>
+              LVL {level}{level >= 5 ? ' MAX' : ''}
+            </span>
+          </div>
         </div>
-        <div
-          style={{
-            marginTop: 4,
-            fontFamily: 'var(--mono)',
-            fontSize: 9,
-            letterSpacing: '0.06em',
-            color: statusColor(status),
-            textTransform: 'uppercase',
-          }}
-        >
+        <div style={{ fontFamily: 'var(--mono)', fontSize: 9, letterSpacing: '0.06em', color: statusColor(status), textTransform: 'uppercase' }}>
           {statusLabel(status)}
         </div>
       </div>

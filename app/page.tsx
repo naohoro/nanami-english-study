@@ -14,14 +14,19 @@ async function getPageData() {
   if (!user) redirect('/login')
   if (!user.user_metadata?.onboarding_done) redirect('/onboarding')
 
-  const [masteryResult, profileResult, sessionResult] = await Promise.all([
+  const [masteryResult, profileResult, sessionResult, difficultyResult] = await Promise.all([
     supabase.from('mastery').select('*').eq('user_id', user.id),
     supabase.from('profiles').select('exam_date, study_started_at').eq('user_id', user.id).single(),
     supabase.from('sessions').select('result').eq('user_id', user.id),
+    supabase.from('difficulty_state').select('boss_type, current_difficulty').eq('user_id', user.id),
   ])
 
   const masteryMap = new Map(
     masteryResult.data?.map((r: { boss_type: string; status: string }) => [r.boss_type, r.status]) ?? []
+  )
+
+  const levelMap = new Map(
+    difficultyResult.data?.map((r: { boss_type: string; current_difficulty: number }) => [r.boss_type, r.current_difficulty]) ?? []
   )
 
   const sessions = sessionResult.data ?? []
@@ -32,6 +37,7 @@ async function getPageData() {
 
   return {
     masteryMap,
+    levelMap,
     examDate: profileResult.data?.exam_date ?? null,
     studyStartedAt: profileResult.data?.study_started_at ?? user.created_at,
     stats: { accuracyPct, clearedBossCount, totalMinutes: 0, streakDays: 1 },
@@ -39,7 +45,7 @@ async function getPageData() {
 }
 
 export default async function MapPage() {
-  const { masteryMap, examDate, studyStartedAt, stats } = await getPageData()
+  const { masteryMap, levelMap, examDate, studyStartedAt, stats } = await getPageData()
 
   const bosses = Object.values(BOSS_CONFIGS)
 
@@ -88,6 +94,7 @@ export default async function MapPage() {
                 points={boss.points}
                 trickSummary={boss.trickSteps[0] ?? ''}
                 status={status}
+                level={levelMap.get(boss.type) ?? 1}
               />
             )
           })}

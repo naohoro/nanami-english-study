@@ -64,10 +64,18 @@ export default function SoloPage() {
     setSubmitted(true)
 
     if (allCorrect) {
+      // Advance level (cap at 5)
+      const nextLevel = Math.min(5, (problem.difficulty ?? 1) + 1)
+      await fetch('/api/difficulty', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bossType, difficulty: nextLevel }),
+      })
       sessionStorage.setItem('clearedMeta', JSON.stringify({
         bossType,
         accuracy: 100,
         timeSpentSec,
+        clearedLevel: problem.difficulty ?? 1,
       }))
       router.push(`/boss/${bossType}/cleared`)
     }
