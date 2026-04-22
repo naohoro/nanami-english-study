@@ -118,3 +118,17 @@ export interface UserStats {
   accuracyPct: number
   studyDays: number
 }
+
+export type AiTeacherPageType = 'problem' | 'map' | 'general'
+
+export interface AiTeacherContext {
+  pageType: AiTeacherPageType
+  bossType?: BossType
+  passageHtml?: string
+  questionText?: string
+}
+
+export interface ChatMessage {
+  role: 'user' | 'assistant'
+  content: string
+}

@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import type { GeneratedProblem } from '@/lib/types'
+import type { GeneratedProblem, BossType } from '@/lib/types'
+import { AiTeacherChat } from '@/components/ai-teacher/AiTeacherChat'
 
 interface ProblemPanelProps {
   problem: GeneratedProblem
@@ -9,6 +10,7 @@ interface ProblemPanelProps {
   onSelect?: (questionNumber: number, label: 'A' | 'B' | 'C' | 'D') => void
   revealAnswer?: boolean
   highlightMap?: Record<number, { keyText: string; keyJapanese: string }>
+  bossType?: BossType
 }
 
 function injectHighlight(html: string, text: string, color: 'green' | 'pink' | 'yellow'): string {
@@ -29,6 +31,7 @@ export function ProblemPanel({
   onSelect,
   revealAnswer = false,
   highlightMap = {},
+  bossType,
 }: ProblemPanelProps) {
   const [showJapanese, setShowJapanese] = useState(false)
   const [japanese, setJapanese] = useState<string | null>(null)
@@ -164,6 +167,18 @@ export function ProblemPanel({
             dangerouslySetInnerHTML={{ __html: displayHtml }}
           />
         )}
+      </div>
+
+      {/* AI先生チャット */}
+      <div className="mt-4">
+        <AiTeacherChat
+          context={{
+            pageType: 'problem',
+            bossType: bossType ?? problem.bossType,
+            passageHtml: problem.passageHtml,
+            questionText: problem.questions.map(q => q.questionText).join(' / '),
+          }}
+        />
       </div>
 
       {/* 設問一覧 */}
