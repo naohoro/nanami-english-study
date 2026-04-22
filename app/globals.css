@@ -1,25 +1,184 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════════════════════
+ * app/globals.css — Hybrid Design System v0.5.0 "Quiet Luxe"
+ * ═══════════════════════════════════════════════════════════════ */
+
 :root {
-  --cream: #FAF7F4;
-  --burgundy: #8C1A4B;
-  --burgundy-dark: #6E1239;
-  --burgundy-light: #F8EDF4;
-  --gold: #B8922E;
-  --gold-light: #FBF5E6;
-  --border: #E8DDD5;
+  /* ─── Paper & surface ─────────────────────────────────────── */
+  --paper:        #F1ECE2;
+  --paper-2:      #E7E1D3;
+  --surface:      #FDFBF5;
+
+  /* ─── Ink scale ───────────────────────────────────────────── */
+  --ink:          #1A1814;
+  --ink-2:        #3C362D;
+  --ink-3:        #7A7064;
+  --ink-4:        #B5AA98;
+
+  /* ─── Rules ───────────────────────────────────────────────── */
+  --rule:         #1A1814;
+  --rule-soft:    #D7CEB9;
+
+  /* ─── Accents ─────────────────────────────────────────────── */
+  --accent:       #8B1A2E;
+  --accent-2:     #D98856;
+  --highlight:    #F0DAB5;
+
+  /* ─── Semantic ────────────────────────────────────────────── */
+  --ok:           #4A6B3E;
+  --danger:       #C44536;
+
+  /* ─── Legacy aliases (後方互換) ───────────────────────────── */
+  --cream:          var(--paper);
+  --burgundy:       var(--accent);
+  --burgundy-dark:  #6E1324;
+  --burgundy-light: #F3E5E8;
+  --gold:           #A88230;
+  --gold-light:     #F5EBCF;
+  --border:         var(--rule-soft);
+
+  /* ─── Typography stacks ───────────────────────────────────── */
+  --display: var(--font-fraunces, 'Hiragino Mincho ProN', 'Yu Mincho', serif);
+  --sans:    var(--font-inter, -apple-system, 'Hiragino Kaku Gothic ProN', system-ui, sans-serif);
+  --mono:    var(--font-mono, ui-monospace, 'SF Mono', Menlo, monospace);
+  --mincho:  'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif;
+  --serif-en:'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
 }
 
-body {
-  background: var(--cream);
-  color: #1A1A1A;
+html, body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.005em;
 }
 
+/* ─── Japanese reading ────────────────────────────────────── */
 .font-mincho {
-  font-family: 'Hiragino Mincho Pro', 'Yu Mincho', 'Noto Serif JP', Georgia, serif;
+  font-family: var(--mincho);
 }
 
+/* ─── English passage ──────────────────────────────────────  */
 .passage-english {
-  font-family: Georgia, 'Times New Roman', serif;
-  line-height: 1.8;
+  font-family: var(--serif-en);
+  line-height: 1.75;
+  color: var(--ink);
+  font-variant-numeric: normal;
+}
+
+/* ─── Tabular numerals ────────────────────────────────────── */
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* ─── Editorial display headline ──────────────────────────── */
+.display {
+  font-family: var(--display);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+}
+.display-italic {
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+}
+
+/* ─── Mono kicker ──────────────────────────────────────────── */
+.mono-kicker {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+/* ─── Focus ring ───────────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ─── Safe area ────────────────────────────────────────────── */
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0); }
+.safe-top    { padding-top:    env(safe-area-inset-top, 0); }
+
+/* ─── Hybrid button ────────────────────────────────────────── */
+.hy-btn {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 14px;
+  padding: 14px 22px;
+  border-radius: 0;
+  cursor: pointer;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  transition: all 160ms ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+}
+.hy-btn:hover { background: var(--accent); border-color: var(--accent); }
+.hy-btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule); }
+.hy-btn.ghost:hover { background: var(--ink); color: var(--paper); }
+.hy-btn .arr { font-family: var(--display); font-style: italic; font-size: 17px; }
+.hy-btn.full { width: 100%; padding: 16px 20px; }
+
+/* ─── Hybrid bar ────────────────────────────────────────────── */
+.hy-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 10px 20px;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--rule);
+  letter-spacing: 0;
+}
+.hy-bar .c { text-align: center; color: var(--ink); }
+.hy-bar .r { text-align: right; color: var(--accent); }
+
+/* ─── Choices ───────────────────────────────────────────────── */
+.hy-choice {
+  display: grid;
+  grid-template-columns: 28px 1fr 20px;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 20px;
+  cursor: pointer;
+  border: 0;
+  border-top: 1px solid var(--rule-soft);
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  font-family: var(--sans);
+  font-size: 14.5px;
+  color: var(--ink);
+  transition: background 140ms ease;
+}
+.hy-choice:last-of-type { border-bottom: 1px solid var(--rule-soft); }
+.hy-choice:hover { background: var(--surface); }
+.hy-choice.selected { background: var(--surface); }
+.hy-choice.correct { background: #F0F3EC; }
+.hy-choice.wrong { opacity: 0.4; }
+
+/* ─── Explainer (解説パネル) ─────────────────────────────── */
+.hy-explain {
+  padding: 20px;
+  background: var(--ink);
+  color: var(--paper);
+  border-top: 1px solid var(--ink);
+}
+
+/* ─── Cleared ───────────────────────────────────────────────── */
+.hy-cleared {
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
 }

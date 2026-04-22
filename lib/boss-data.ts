@@ -1,4 +1,4 @@
-import type { BossConfig } from './types'
+import type { BossConfig, BossRationale } from './types'
 
 export const BOSS_CONFIGS: Record<string, BossConfig> = {
   short_text: {
@@ -21,6 +21,11 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       ja: '→ 最初の文が目的を述べていることがほとんど。タイトルも重要なヒント。',
     },
     themes: ['travel', 'daily_life', 'community', 'business'],
+    rationale: {
+      points: 6, totalShare: 6, accuracyPct2025: 78, growthPotential: 'low',
+      headline: '取り逃がしが最大の損失。',
+      rationale: `第1問は配点6点、2025年正答率78%と取りやすい。\nしかし油断して1問落とせば3点を失う。配点単価で見ると軽くない。\n「設問先読み → 数字と日付だけ照合」を徹底すれば、安定して満点が狙える。`,
+    },
   },
   survey_blog: {
     type: 'survey_blog',
@@ -43,6 +48,11 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       ja: '→ 60% = "most"。数字が言い換えられることに注意。',
     },
     themes: ['technology', 'environment', 'daily_life', 'community'],
+    rationale: {
+      points: 12, totalShare: 12, accuracyPct2025: 65, growthPotential: 'medium',
+      headline: '段落の最初の文だけで、7割解ける。',
+      rationale: `第2問は配点12点、正答率65%。アンケートは数字と割合の照合、ブログは各段落の主張文だけを追う。\n本文を全部読む必要はない。言い換え(60% ≒ most / nearly all)に注意する。\nステップを守れば8割以上は取れる。`,
+    },
   },
   short_story: {
     type: 'short_story',
@@ -64,6 +74,11 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       ja: '→ "Two days later" を見つければ festival → letter の順序が決まる。',
     },
     themes: ['daily_life', 'community', 'travel', 'environment'],
+    rationale: {
+      points: 9, totalShare: 9, accuracyPct2025: 71, growthPotential: 'medium',
+      headline: '時間の順序を掴めば、物語は解ける。',
+      rationale: `第3問は配点9点、正答率71%。"yesterday / two days later" のような時間語だけをマークする。\n登場人物の行動を時系列に並べれば、「正しい順番を選ぶ」設問はそれだけで解ける。\n感情語は後回しで良い。`,
+    },
   },
   essay_edit: {
     type: 'essay_edit',
@@ -85,6 +100,11 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       ja: '→ 「具体例」を求めているなら、数字や固有名詞が入っている選択肢を選ぶ。',
     },
     themes: ['technology', 'environment', 'business', 'community'],
+    rationale: {
+      points: 12, totalShare: 12, accuracyPct2025: 58, growthPotential: 'high',
+      headline: 'コメントを読めば、答えが書いてある。',
+      rationale: `第4問は配点12点、正答率58%。半数近くが落としている。\n先生のコメントそのものが答えのヒント。\n「具体例を追加せよ」とあれば、数字や固有名詞のある選択肢が正解。コメントにない情報を足す選択肢は罠。`,
+    },
   },
   multi_doc: {
     type: 'multi_doc',
@@ -107,6 +127,11 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       ja: '→ 2つの文書を組み合わせて初めて答えが出る。',
     },
     themes: ['travel', 'business', 'daily_life', 'community'],
+    rationale: {
+      points: 16, totalShare: 16, accuracyPct2025: 52, growthPotential: 'high',
+      headline: '数字だけ見ればいい、は根拠のある近道。',
+      rationale: `第5問は配点16点、2025年正答率52%。半分近くが落としている。\nステップ通りに「日付・時間・金額・条件」だけをマークし、複数文書の数字を照合する。\nこれだけで7割は確保できる。本文全体を読む必要はない。`,
+    },
   },
   long_story: {
     type: 'long_story',
@@ -127,6 +152,11 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       ja: '→ 感情の変化を問う設問はここが正解の根拠。nervous → relieved の変化を確認。',
     },
     themes: ['daily_life', 'community', 'travel', 'environment'],
+    rationale: {
+      points: 12, totalShare: 12, accuracyPct2025: 55, growthPotential: 'medium',
+      headline: '感情の変化だけ追えば、長編は短くなる。',
+      rationale: `第6問は配点12点、正答率55%。\n第1段落と最終段落だけ先に読み、"nervous → relieved" のような感情の変化をマークする。\n心情の理由を問う設問は、その感情語の前後に必ず答えがある。`,
+    },
   },
   article_slides: {
     type: 'article_slides',
@@ -148,6 +178,11 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       ja: '→ スライドの見出しと本文の段落テーマが対応している。',
     },
     themes: ['technology', 'environment', 'business', 'community'],
+    rationale: {
+      points: 16, totalShare: 16, accuracyPct2025: 49, growthPotential: 'high',
+      headline: 'スライドが、本文の地図になる。',
+      rationale: `第7問は配点16点、正答率49%。半分以上が落としている。\nスライドの空欄を先に全部読み、対応する本文段落を特定する。\n「空欄のテーマ = 段落の最初の文」で対応関係を作れば、本文は読む場所が絞られる。`,
+    },
   },
   essay_synthesis: {
     type: 'essay_synthesis',
@@ -168,6 +203,11 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       ja: '→ 共通点は「技術はスポーツを向上させる」。その論理的帰結がアウトラインの答え。',
     },
     themes: ['technology', 'environment', 'business', 'community'],
+    rationale: {
+      points: 17, totalShare: 17, accuracyPct2025: 47, growthPotential: 'high',
+      headline: '17点、正答率47.1%。ここで勝負が決まる。',
+      rationale: `第8問は配点17点で英語全体の17%、2025年正答率47.1% — 半分以上が落としている。\nこの1問を取れるかで合否が分かれる最重要ボス。\nステップ通りに「立場選定 → 根拠2点 → 資料で補完」を回せば、正答率は大きく跳ね上がる。\nだからこのアプリは第8問から始めることを薦める。`,
+    },
   },
 }
 

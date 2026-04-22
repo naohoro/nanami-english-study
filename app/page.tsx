@@ -1,74 +1,75 @@
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { BOSS_CONFIGS } from '@/lib/boss-data'
-import { MapList } from '@/components/map/MapList'
+import { HybridBar } from '@/components/map/HybridBar'
 import { ProgressBanner } from '@/components/map/ProgressBanner'
-import type { Mastery, BossType, MasteryStatus } from '@/lib/types'
+import { BossCard } from '@/components/map/BossCard'
+import type { BossType, MasteryStatus } from '@/lib/types'
 
-async function getMasteries(): Promise<{ masteries: Mastery[]; onboardingDone: boolean }> {
+async function getPageData() {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) redirect('/login')
+  if (!user.user_metadata?.onboarding_done) redirect('/onboarding')
 
-  const onboardingDone = !!user.user_metadata?.onboarding_done
+  const [masteryResult, profileResult, sessionResult] = await Promise.all([
+    supabase.from('mastery').select('*').eq('user_id', user.id),
+    supabase.from('profiles').select('exam_date, study_started_at').eq('user_id', user.id).single(),
+    supabase.from('sessions').select('result').eq('user_id', user.id),
+  ])
 
-  const { data } = await supabase
-    .from('mastery')
-    .select('*')
-    .eq('user_id', user.id)
+  const masteryMap = new Map(
+    masteryResult.data?.map((r: { boss_type: string; status: string }) => [r.boss_type, r.status]) ?? []
+  )
 
-  const allBossTypes = Object.keys(BOSS_CONFIGS) as BossType[]
-  const masteryMap = new Map(data?.map((r: { boss_type: string; status: string; cleared_at: string | null; attempt_count: number }) => [r.boss_type, r]) ?? [])
+  const sessions = sessionResult.data ?? []
+  const cleared = sessions.filter((s: { result: string }) => s.result === 'cleared').length
+  const total = sessions.length
+  const accuracyPct = total > 0 ? Math.round((cleared / total) * 100) : 0
+  const clearedBossCount = [...masteryMap.values()].filter((v) => v === 'cleared').length
 
-  const masteries = allBossTypes.map((bossType) => {
-    const row = masteryMap.get(bossType)
-    return {
-      userId: user.id,
-      bossType,
-      status: (row?.status ?? 'untouched') as Mastery['status'],
-      clearedAt: row?.cleared_at ?? null,
-      attemptCount: row?.attempt_count ?? 0,
-    }
-  })
-
-  return { masteries, onboardingDone }
+  return {
+    masteryMap,
+    examDate: profileResult.data?.exam_date ?? null,
+    studyStartedAt: profileResult.data?.study_started_at ?? user.created_at,
+    stats: { accuracyPct, clearedBossCount, totalMinutes: 0, streakDays: 1 },
+  }
 }
 
 export default async function MapPage() {
-  const { masteries, onboardingDone } = await getMasteries()
+  const { masteryMap, examDate, studyStartedAt, stats } = await getPageData()
 
-  if (!onboardingDone) redirect('/onboarding')
-
-  const masteryStatusMap = Object.fromEntries(
-    masteries.map((m) => [m.bossType, m.status as MasteryStatus])
-  )
   const bosses = Object.values(BOSS_CONFIGS)
 
   return (
-    <main className="flex-1 p-4 space-y-4">
-      <div className="pt-6 pb-2">
-        <p className="text-xs font-bold tracking-widest mb-1" style={{ color: 'var(--burgundy)' }}>共通テスト英語 完全対策</p>
-        <h1 className="text-2xl font-black" style={{ color: '#1A1A1A' }}>どの問題に取り組む？</h1>
-        <p className="text-sm mt-1" style={{ color: '#787878' }}>第1問〜第8問・全8種類</p>
-      </div>
+    <>
+      <HybridBar studyStartedAt={studyStartedAt} examDate={examDate ?? undefined} />
+      <main className="flex-1">
+        <ProgressBanner stats={stats} />
 
-      <Link
-        href="/about"
-        className="flex items-center justify-between rounded-xl px-4 py-3 active:opacity-70"
-        style={{ background: '#1A1A1A', color: '#FFD700' }}
-      >
-        <div className="flex items-center gap-2">
-          <span className="text-base">⚡</span>
-          <span className="text-sm font-bold">ガチの裏技情報</span>
+        <div style={{ borderTop: '1px solid var(--rule)' }}>
+          {bosses.map((boss, i) => {
+            const raw = masteryMap.get(boss.type)
+            const status =
+              raw === 'cleared' ? 'cleared'
+              : raw === 'in_progress' ? 'in-progress'
+              : 'available'
+
+            return (
+              <BossCard
+                key={boss.type}
+                index={boss.section}
+                type={boss.type as BossType}
+                name={boss.name}
+                points={boss.points}
+                trickSummary={boss.trickSteps[0] ?? ''}
+                status={status}
+              />
+            )
+          })}
         </div>
-        <span className="text-xs" style={{ color: '#888' }}>共通テストの攻略データを見る →</span>
-      </Link>
-
-      <ProgressBanner masteries={masteries} />
-
-      <MapList bosses={bosses} masteryMap={masteryStatusMap} />
-    </main>
+      </main>
+    </>
   )
 }

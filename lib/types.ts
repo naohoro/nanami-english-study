@@ -79,6 +79,15 @@ export interface DifficultyState {
   consecutiveFailures: number
 }
 
+export interface BossRationale {
+  points: number
+  totalShare: number
+  accuracyPct2025: number
+  growthPotential: 'low' | 'medium' | 'high'
+  headline: string
+  rationale: string
+}
+
 export interface BossConfig {
   type: BossType
   name: string
@@ -90,4 +99,20 @@ export interface BossConfig {
   trickSteps: string[]
   example?: { en: string; ja: string }
   themes: ProblemTheme[]
+  rationale?: BossRationale
+}
+
+export interface Profile {
+  id: string
+  userId: string
+  examDate: string | null
+  studyStartedAt: string
+  createdAt: string
+}
+
+export interface UserStats {
+  totalSessions: number
+  clearedCount: number
+  accuracyPct: number
+  studyDays: number
 }

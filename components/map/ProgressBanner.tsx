@@ -1,44 +1,70 @@
-import type { Mastery } from '@/lib/types'
-import { BOSS_CONFIGS } from '@/lib/boss-data'
+'use client'
 
-interface ProgressBannerProps {
-  masteries: Mastery[]
+type Stats = {
+  accuracyPct: number
+  clearedBossCount: number
+  totalMinutes: number
+  streakDays: number
 }
 
-export function ProgressBanner({ masteries }: ProgressBannerProps) {
-  const cleared = masteries.filter((m) => m.status === 'cleared')
-  const inProgress = masteries.filter((m) => m.status === 'in_progress')
+type Props = {
+  stats: Stats
+  greeting?: string
+}
 
-  if (cleared.length === 0 && inProgress.length === 0) {
-    return (
-      <div className="rounded-2xl p-4" style={{ background: 'var(--gold-light)', border: '1px solid #E8D5A3' }}>
-        <p className="text-sm font-medium" style={{ color: 'var(--gold)' }}>
-          まずここから始めよう ✨
-        </p>
-        <p className="text-xs mt-1" style={{ color: '#787878' }}>
-          配点が大きい問題から攻略するのが、点数アップへの近道。
-        </p>
-      </div>
-    )
-  }
+export function ProgressBanner({ stats, greeting }: Props) {
+  const h = Math.floor(stats.totalMinutes / 60)
+  const m = stats.totalMinutes % 60
+  const timeStr = h > 0 ? `${h}h ${m}m` : `${m}m`
 
   return (
-    <div className="rounded-2xl p-4 space-y-2" style={{ background: 'var(--burgundy-light)', border: '1px solid #D4A0B8' }}>
-      <p className="text-xs font-bold" style={{ color: 'var(--burgundy)' }}>あなたの進捗</p>
-      {cleared.length > 0 && (
-        <div>
-          {cleared.map((m) => (
-            <p key={m.bossType} className="text-sm">✅ {BOSS_CONFIGS[m.bossType]?.name ?? m.bossType}　クリア！</p>
-          ))}
-        </div>
+    <section style={{ padding: '28px 20px 24px', borderBottom: '1px solid var(--rule)' }}>
+      {greeting && (
+        <div className="mono-kicker" style={{ marginBottom: 12 }}>{greeting}</div>
       )}
-      {inProgress.length > 0 && (
-        <div>
-          {inProgress.map((m) => (
-            <p key={m.bossType} className="text-sm">🔥 {BOSS_CONFIGS[m.bossType]?.name ?? m.bossType}　練習中</p>
-          ))}
-        </div>
-      )}
+      <div className="mono-kicker">§01 / TODAY'S WORK</div>
+
+      <h1
+        className="display"
+        style={{ marginTop: 10, fontSize: 38, lineHeight: 1.05, color: 'var(--ink)', fontVariationSettings: '"opsz" 144' }}
+      >
+        Read what <em className="display-italic">matters.</em>
+        <br />
+        Skip the rest.
+      </h1>
+
+      <div className="font-mincho" style={{ marginTop: 14, fontSize: 14, lineHeight: 1.65, color: 'var(--ink-2)' }}>
+        設問から読み、本文は戻り読み。
+        <br />
+        これだけで共通テスト英語は、静かに終わる。
+      </div>
+
+      <div
+        style={{
+          marginTop: 22,
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          borderTop: '1px solid var(--rule)',
+          borderBottom: '1px solid var(--rule)',
+        }}
+      >
+        <Stat label="ACCURACY" value={`${stats.accuracyPct}`} unit="%" />
+        <Stat label="CLEARED" value={`${stats.clearedBossCount}`} unit="/ 8" />
+        <Stat label="TIME" value={timeStr} />
+        <Stat label="STREAK" value={`${stats.streakDays}`} unit="d" />
+      </div>
+    </section>
+  )
+}
+
+function Stat({ label, value, unit }: { label: string; value: string; unit?: string }) {
+  return (
+    <div style={{ padding: '14px 12px', borderRight: '1px solid var(--rule-soft)' }}>
+      <div style={{ fontFamily: 'var(--mono)', fontSize: 9, color: 'var(--ink-3)', letterSpacing: '0.05em' }}>{label}</div>
+      <div className="display tabular" style={{ marginTop: 6, fontSize: 22, color: 'var(--ink)', lineHeight: 1 }}>
+        {value}
+        {unit && <span style={{ fontSize: 13, color: 'var(--ink-3)', marginLeft: 3 }}>{unit}</span>}
+      </div>
     </div>
   )
 }
