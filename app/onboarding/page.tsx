@@ -6,24 +6,32 @@ import { createBrowserClient } from '@supabase/ssr'
 
 const slides = [
   {
-    emoji: '📚',
-    title: '共通テスト英語を\n最短で攻略するアプリ',
-    body: '英語が苦手でも大丈夫。\n答えを先に見てから学ぶ、\n答えから逆算する特別な方法。',
+    stepLabel: 'WELCOME, STEP I OF III',
+    headingA: 'Answer ',
+    headingAItalic: 'first.',
+    headingB: 'Understand ',
+    headingBItalic: 'second.',
+    body: 'このアプリは「答えを先に見る」学習法。\n暗記や単語帳ではなく、答えから逆算して「なぜそうなのか」を理解する。\n\n共通テスト英語は、型を知れば6割は取れる。',
+    bold: ['答えから逆算して', '型を知れば'],
   },
   {
-    emoji: '🎯',
-    title: '点数が大きい問題から\nやるのが正解',
-    body: '第8問は17点。\nここを確実に取れると英語全体の\n点数が大きく変わる。\nだから、この問題から始める。',
+    stepLabel: 'STEP II OF III',
+    headingA: 'High-value\n',
+    headingAItalic: 'questions first.',
+    headingB: '',
+    headingBItalic: '',
+    body: '第8問は17点。ここを確実に取れると英語全体の点数が大きく変わる。\n\nだから、このアプリは点数の大きな問題から始める。効率が違う。',
+    bold: [],
   },
   {
-    emoji: '✨',
-    title: '使い方はシンプル',
-    steps: [
-      '答えと解説を先に見る',
-      '「なるほど！」と思えたら',
-      '自力でやってみる',
-    ],
-    body: 'できた！という体験が積み重なる。\nそれだけ。',
+    stepLabel: 'STEP III OF III',
+    headingA: 'Simple.\n',
+    headingAItalic: 'Three steps.',
+    headingB: '',
+    headingBItalic: '',
+    steps: ['答えと解説を先に見る', '「なるほど！」と思えたら', '自力でやってみる'],
+    body: 'できた、という体験が積み重なる。\nそれだけ。',
+    bold: [],
   },
 ]
 
@@ -62,58 +70,65 @@ export default function OnboardingPage() {
   }
 
   return (
-    <main className="flex-1 p-6 flex flex-col">
-      {/* progress dots */}
-      <div className="flex gap-2 pt-4 pb-8">
+    <main className="flex-1 flex flex-col justify-between" style={{ padding: '2rem 1.75rem 2rem' }}>
+      {/* Progress bar */}
+      <div className="flex gap-1.5">
         {slides.map((_, i) => (
           <div
             key={i}
-            className="h-1.5 rounded-full transition-all"
-            style={{
-              width: i === current ? '32px' : '8px',
-              background: i === current ? 'var(--burgundy)' : 'var(--border)',
-            }}
+            className="h-0.5 flex-1 transition-all"
+            style={{ background: i <= current ? 'var(--ink)' : 'var(--rule-soft)' }}
           />
         ))}
       </div>
 
-      {/* slide content */}
-      <div className="flex-1 flex flex-col justify-center gap-6">
-        <div className="text-6xl">{slide.emoji}</div>
+      {/* Step label */}
+      <p className="text-xs tracking-widest mt-6" style={{ color: 'var(--accent)', letterSpacing: '0.12em', fontFamily: 'var(--sans)' }}>
+        {slide.stepLabel}
+      </p>
 
-        <h1 className="text-2xl font-black leading-snug whitespace-pre-line" style={{ color: '#1A1A1A' }}>
-          {slide.title}
+      {/* Headline */}
+      <div style={{ marginTop: '1.25rem', flex: 1 }}>
+        <h1 className="display" style={{ fontSize: 'clamp(1.9rem, 8vw, 2.6rem)', lineHeight: 1.15, color: 'var(--ink)', whiteSpace: 'pre-line' }}>
+          {slide.headingA}<em style={{ color: 'var(--accent)' }}>{slide.headingAItalic}</em>
+          {slide.headingB && <>{'\n'}{slide.headingB}<em style={{ color: 'var(--accent)' }}>{slide.headingBItalic}</em></>}
         </h1>
 
         {'steps' in slide && slide.steps && (
-          <div className="space-y-3">
+          <div className="mt-6 space-y-3">
             {slide.steps.map((step, i) => (
-              <div key={i} className="flex gap-3 items-center">
-                <span className="w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center text-white shrink-0" style={{ background: 'var(--burgundy)' }}>
-                  {i + 1}
+              <div key={i} className="flex gap-4 items-start">
+                <span className="text-xs tracking-widest shrink-0 mt-0.5" style={{ color: 'var(--accent)', fontFamily: 'var(--sans)', minWidth: '1.25rem' }}>
+                  {['I', 'II', 'III'][i]}
                 </span>
-                <p className="text-base" style={{ color: '#1A1A1A' }}>{step}</p>
+                <p className="text-base leading-snug" style={{ color: 'var(--ink)', fontFamily: 'var(--mincho)' }}>{step}</p>
               </div>
             ))}
           </div>
         )}
 
-        <p className="text-base leading-relaxed whitespace-pre-line" style={{ color: '#787878' }}>
+        <p className="text-sm leading-relaxed mt-6 whitespace-pre-line" style={{ color: 'var(--ink-3)', fontFamily: 'var(--mincho)' }}>
           {slide.body}
         </p>
       </div>
 
-      {/* button */}
-      <div className="pb-4">
-        <button
-          onClick={handleNext}
-          disabled={finishing}
-          className="w-full py-4 rounded-2xl text-base font-bold text-white transition-opacity active:opacity-70 disabled:opacity-40"
-          style={{ background: 'var(--burgundy)' }}
-        >
-          {finishing ? '準備中...' : isLast ? 'はじめる →' : '次へ →'}
-        </button>
-      </div>
+      {/* CTA */}
+      <button
+        onClick={handleNext}
+        disabled={finishing}
+        className="w-full flex items-center justify-between transition-opacity active:opacity-70 disabled:opacity-30"
+        style={{
+          marginTop: '2.5rem',
+          background: 'var(--ink)',
+          color: 'var(--paper)',
+          padding: '1.1rem 1.5rem',
+          fontFamily: 'var(--sans)',
+          fontSize: '1rem',
+        }}
+      >
+        <span>{finishing ? '準備中...' : isLast ? 'はじめる' : 'Continue'}</span>
+        <span style={{ fontSize: '1.25rem' }}>→</span>
+      </button>
     </main>
   )
 }

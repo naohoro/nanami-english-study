@@ -17,8 +17,10 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       '本文に書いてある**事実だけ**で選ぶ（「良さそう」に見えるだけの選択肢は罠）',
     ],
     example: {
-      en: 'Q: "What is the main purpose of this notice?" → Check the first sentence of the text.',
-      ja: '→ 最初の文が目的を述べていることがほとんど。タイトルも重要なヒント。',
+      scenario: 'イベントのお知らせチラシが出題される。目的を問う設問が多い。',
+      en: 'Q: "What is the main purpose of this notice?"',
+      questionJa: '→ このお知らせの主な目的は何か？',
+      ja: '→ チラシの見出しか最初の文を読む。"to inform / to announce / to remind" など目的語が正解の根拠。',
     },
     themes: ['travel', 'daily_life', 'community', 'business'],
     rationale: {
@@ -44,8 +46,10 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       'アンケート：**数字・割合**と関連するコメントを照合する',
     ],
     example: {
+      scenario: 'アンケート結果を含むブログ記事が出題される。数字と意見の対応を問う設問が多い。',
       en: '"60% of students said they enjoyed the event." → Q: What did most students think?',
-      ja: '→ 60% = "most"。数字が言い換えられることに注意。',
+      questionJa: '→ 生徒のほとんどはイベントについてどう思ったか？',
+      ja: '→ 60% ≒ "most"（大部分）と言い換えられる。数字が選択肢でどう表現されるかに注意。',
     },
     themes: ['technology', 'environment', 'daily_life', 'community'],
     rationale: {
@@ -70,8 +74,10 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       '設問の選択肢と**時系列を照合**する',
     ],
     example: {
+      scenario: '登場人物の出来事を時系列で追う短編物語。出来事の順番を問う設問が必ず出る。',
       en: '"She met him at the festival. Two days later, she received a letter."',
-      ja: '→ "Two days later" を見つければ festival → letter の順序が決まる。',
+      questionJa: '→ 彼女はまつりで彼に会い、2日後に手紙を受け取った。',
+      ja: '→ "Two days later" が時系列のカギ。festival → letter の順序がここで確定する。',
     },
     themes: ['daily_life', 'community', 'travel', 'environment'],
     rationale: {
@@ -96,8 +102,10 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       '**そのコメントを満たす選択肢だけ**を選ぶ（本文は後から確認）',
     ],
     example: {
-      en: 'Comment: "Add a specific example here." → Choose the option with a concrete number or name.',
-      ja: '→ 「具体例」を求めているなら、数字や固有名詞が入っている選択肢を選ぶ。',
+      scenario: '生徒が書いた英文エッセイに先生がコメントをつけた問題。コメントに合う文を選ぶ。',
+      en: 'Teacher\'s comment: "Add a specific example here."',
+      questionJa: '→ 先生のコメント：「ここに具体的な例を追加してください」',
+      ja: '→ 「具体例＝数字・固有名詞」と覚える。コメントにない情報を足す選択肢はすべて罠。',
     },
     themes: ['technology', 'environment', 'business', 'community'],
     rationale: {
@@ -123,8 +131,10 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       '**複数文書を組み合わせる設問**を最後に読む（一番難しいので後回し）',
     ],
     example: {
-      en: 'Leaflet says "open Mon-Fri". Form says "submitted on Saturday" → Q: Was the form submitted on time?',
-      ja: '→ 2つの文書を組み合わせて初めて答えが出る。',
+      scenario: 'チラシ・フォーム・メールなど複数の文書を読み比べる問題。文書をまたいだ情報の照合が必要。',
+      en: 'Leaflet: "Open Mon–Fri only." / Form submitted: Saturday',
+      questionJa: '→ このフォームの提出は、チラシの規則を満たしているか？',
+      ja: '→ チラシ（月〜金のみ）とフォーム（土曜提出）を照合する。1つの文書だけでは解けない設問がこのボスの本質。',
     },
     themes: ['travel', 'business', 'daily_life', 'community'],
     rationale: {
@@ -148,8 +158,10 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       '**感情・心情を表す単語をマーク**しながら本文を読む',
     ],
     example: {
+      scenario: '登場人物の心情変化を追う長編物語。感情がどう変わったかを問う設問が必ず出る。',
       en: '"She had been nervous, but now she felt relieved."',
-      ja: '→ 感情の変化を問う設問はここが正解の根拠。nervous → relieved の変化を確認。',
+      questionJa: '→ 彼女はずっと緊張していたが、今は安心していた。',
+      ja: '→ nervous（緊張）→ relieved（安心）の変化がここで示されている。「なぜ変わったか」の理由がこの文の前後にある。',
     },
     themes: ['daily_life', 'community', 'travel', 'environment'],
     rationale: {
@@ -174,8 +186,10 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       '段落の最初の文だけ読んで、空欄に合うかを確認する',
     ],
     example: {
-      en: 'Slide: "Benefit 1: [ 32 ]" → Find the paragraph that starts "One benefit is..."',
-      ja: '→ スライドの見出しと本文の段落テーマが対応している。',
+      scenario: '説明文の記事とプレゼンスライドがセットで出題される。スライドの空欄を記事から補う。',
+      en: 'Slide: "Benefit 1: [ 32 ]" / Article: "One benefit is that it saves time."',
+      questionJa: '→ スライド「メリット1：〔　〕」の空欄に入る語句は何か？',
+      ja: '→ スライドの "Benefit 1" と記事の "One benefit is..." が対応している。空欄テーマを先に確認して読む場所を絞る。',
     },
     themes: ['technology', 'environment', 'business', 'community'],
     rationale: {
@@ -199,8 +213,10 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       '追加資料は**アウトラインの空欄に直接対応する部分だけ**を読む',
     ],
     example: {
-      en: 'Step 2: "Jack and Tamara both support accepting technology in sports."',
-      ja: '→ 共通点は「技術はスポーツを向上させる」。その論理的帰結がアウトラインの答え。',
+      scenario: '複数の人物が異なる意見を述べる文章を読み、アウトラインを完成させる問題。',
+      en: 'Jack: "Technology improves sports." / Tamara: "I agree that technology helps athletes."',
+      questionJa: '→ JackとTamaraの共通の主張は何か？',
+      ja: '→ 2人とも「技術がスポーツ・選手を向上させる」と言っている。この共通点がアウトラインの空欄に入る。感情的に正しそうな選択肢が罠。',
     },
     themes: ['technology', 'environment', 'business', 'community'],
     rationale: {

@@ -8,6 +8,7 @@ import { RationaleReveal } from '@/components/boss/RationaleReveal'
 import { BottomButton } from '@/components/ui/BottomButton'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import type { BossType } from '@/lib/types'
+import { AiTeacherChat } from '@/components/ai-teacher/AiTeacherChat'
 
 export default function Step1Page() {
   const params = useParams()
@@ -63,7 +64,11 @@ export default function Step1Page() {
         <TrickPanel trick={boss.trick} steps={boss.trickSteps} example={boss.example} />
       </div>
 
-      <div style={{ marginTop: 'auto', padding: '16px 20px 32px' }}>
+      <div style={{ padding: '0 20px 16px' }}>
+        <AiTeacherChat context={{ pageType: 'problem', bossType }} />
+      </div>
+
+      <div style={{ marginTop: 'auto', padding: '0 20px 32px' }}>
         <BottomButton
           label="わかった！問題を見る →"
           onClick={() => router.push(`/boss/${bossType}/practice`)}

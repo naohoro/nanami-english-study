@@ -5,6 +5,7 @@ import { BOSS_CONFIGS } from '@/lib/boss-data'
 import { HybridBar } from '@/components/map/HybridBar'
 import { ProgressBanner } from '@/components/map/ProgressBanner'
 import { BossCard } from '@/components/map/BossCard'
+import { AiTeacherChat } from '@/components/ai-teacher/AiTeacherChat'
 import type { BossType, MasteryStatus } from '@/lib/types'
 
 async function getPageData() {
@@ -98,6 +99,11 @@ export default async function MapPage() {
               />
             )
           })}
+        </div>
+
+        {/* AI先生チャット — Map全般の質問用 */}
+        <div className="px-4 pb-6 mt-2">
+          <AiTeacherChat context={{ pageType: 'map' }} />
         </div>
       </main>
     </>

@@ -99,7 +99,7 @@ export interface BossConfig {
   timeLimit: number  // seconds
   trick: string
   trickSteps: string[]
-  example?: { en: string; ja: string }
+  example?: { scenario: string; en: string; questionJa: string; ja: string }
   themes: ProblemTheme[]
   rationale?: BossRationale
 }
@@ -117,4 +117,18 @@ export interface UserStats {
   clearedCount: number
   accuracyPct: number
   studyDays: number
+}
+
+export type AiTeacherPageType = 'problem' | 'map' | 'general'
+
+export interface AiTeacherContext {
+  pageType: AiTeacherPageType
+  bossType?: BossType
+  passageHtml?: string
+  questionText?: string
+}
+
+export interface ChatMessage {
+  role: 'user' | 'assistant'
+  content: string
 }
