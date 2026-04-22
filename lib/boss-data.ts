@@ -17,7 +17,7 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       '本文に書いてある**事実だけ**で選ぶ（「良さそう」に見えるだけの選択肢は罠）',
     ],
     example: {
-      en: 'Q: "What is the main purpose of this notice?" → Check the first sentence of the text.',
+      en: 'Q: "What is the main purpose of this notice?"',
       ja: '→ 最初の文が目的を述べていることがほとんど。タイトルも重要なヒント。',
     },
     themes: ['travel', 'daily_life', 'community', 'business'],
@@ -96,7 +96,7 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       '**そのコメントを満たす選択肢だけ**を選ぶ（本文は後から確認）',
     ],
     example: {
-      en: 'Comment: "Add a specific example here." → Choose the option with a concrete number or name.',
+      en: 'Comment: "Add a specific example here."',
       ja: '→ 「具体例」を求めているなら、数字や固有名詞が入っている選択肢を選ぶ。',
     },
     themes: ['technology', 'environment', 'business', 'community'],
@@ -174,7 +174,7 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
       '段落の最初の文だけ読んで、空欄に合うかを確認する',
     ],
     example: {
-      en: 'Slide: "Benefit 1: [ 32 ]" → Find the paragraph that starts "One benefit is..."',
+      en: 'Slide: "Benefit 1: [ 32 ]"',
       ja: '→ スライドの見出しと本文の段落テーマが対応している。',
     },
     themes: ['technology', 'environment', 'business', 'community'],
