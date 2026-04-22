@@ -60,7 +60,7 @@ export default function Step1Page() {
       <div style={{ marginTop: 'auto', padding: '16px 20px 32px' }}>
         <BottomButton
           label="わかった！問題を見る →"
-          onClick={() => router.push(`/boss/${bossType}/step2`)}
+          onClick={() => router.push(`/boss/${bossType}/practice`)}
         />
       </div>
     </main>
