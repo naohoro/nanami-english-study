@@ -8,13 +8,13 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
     points: 6,
     questionCount: 2,
     timeLimit: 90,
-    trick: `タイトルと設問だけ先に読む。本文は全部読まない。
+    trick: `**タイトルと設問だけ先に読む。本文は全部読まない。**
 設問のキーワードが出てくる部分だけを探す。
-チラシや告知文は「日時・場所・条件」の3つを探すと答えが出ることが多い。`,
+チラシや告知文は「**日時・場所・条件**」の3つを探すと答えが出ることが多い。`,
     trickSteps: [
-      '設問を先に全部読む（何を探すか確認）',
-      '本文からキーワードと同じ単語・数字を探す',
-      '本文に書いてある事実だけで選ぶ（「良さそう」に見えるだけの選択肢は罠）',
+      '**設問を先に全部読む**（何を探すか確認）',
+      '本文から**キーワードと同じ単語・数字**を探す',
+      '本文に書いてある**事実だけ**で選ぶ（「良さそう」に見えるだけの選択肢は罠）',
     ],
     example: {
       en: 'Q: "What is the main purpose of this notice?" → Check the first sentence of the text.',
@@ -34,14 +34,14 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
     points: 12,
     questionCount: 4,
     timeLimit: 150,
-    trick: `設問を先に全部読んでから本文を読む。
-ブログなら段落ごとの「テーマ文（最初の文）」だけ追う。
-アンケートなら数字・割合とコメントの対応を探す。
-筆者の意見（I think / should）と事実（数字・データ）を分けて読む。`,
+    trick: `**設問を先に全部読んでから**本文を読む。
+ブログなら段落ごとの「**テーマ文（最初の文）だけ**」追う。
+アンケートなら**数字・割合とコメントの対応**を探す。
+筆者の**意見（I think / should）と事実（数字・データ）を分けて**読む。`,
     trickSteps: [
-      '設問を先に全部読む',
-      'ブログ：各段落の最初の文だけを読む（主張がある）',
-      'アンケート：数字・割合と関連するコメントを照合する',
+      '**設問を先に全部読む**',
+      'ブログ：各段落の**最初の文だけ**を読む（主張がある）',
+      'アンケート：**数字・割合**と関連するコメントを照合する',
     ],
     example: {
       en: '"60% of students said they enjoyed the event." → Q: What did most students think?',
@@ -61,13 +61,13 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
     points: 9,
     questionCount: 3,
     timeLimit: 180,
-    trick: `時間を表す言葉だけをマーク：yesterday / two days ago / last night / the next day / the following week。
-これを順に並べると時系列が完成する。
+    trick: `**時間を表す言葉だけをマーク**：yesterday / two days ago / last night / the next day / the following week。
+これを順に並べると**時系列が完成する**。
 「正しい順番」問題はこれだけで解ける。`,
     trickSteps: [
-      '時間・順序を示す単語を全てマーク',
+      '**時間・順序を示す単語**を全てマーク',
       '登場人物の行動を時系列で�条書きにする',
-      '設問の選択肢と時系列を照合する',
+      '設問の選択肢と**時系列を照合**する',
     ],
     example: {
       en: '"She met him at the festival. Two days later, she received a letter."',
@@ -87,13 +87,13 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
     points: 12,
     questionCount: 4,
     timeLimit: 180,
-    trick: `先生のコメントを先に全部読む。コメントが「答えのヒント」そのもの。
+    trick: `**先生のコメントを先に全部読む。**コメントが「**答えのヒント**」そのもの。
 英文を直すんじゃなく、コメントの内容と選択肢をマッチングするゲームだ。
-コメントにない情報を追加する選択肢は全部罠。`,
+**コメントにない情報を追加する選択肢は全部罠。**`,
     trickSteps: [
-      '先生のコメントを先に全部読む',
-      '各コメントが「何を求めているか」を1語でメモする（例：具体例・理由・対策）',
-      'そのコメントを満たす選択肢だけを選ぶ（本文は後から確認）',
+      '**先生のコメントを先に全部読む**',
+      '各コメントが「**何を求めているか**」を1語でメモする（例：具体例・理由・対策）',
+      '**そのコメントを満たす選択肢だけ**を選ぶ（本文は後から確認）',
     ],
     example: {
       en: 'Comment: "Add a specific example here." → Choose the option with a concrete number or name.',
@@ -113,14 +113,14 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
     points: 16,
     questionCount: 4,
     timeLimit: 240,
-    trick: `チラシ・フォーム・メール、どれを読むか設問で先に決める。
+    trick: `チラシ・フォーム・メール、**どれを読むか設問で先に決める**。
 設問のキーワードが出てくる文書だけを読む。
-数字（日付・料金・条件）が正解の根拠になることが多い。
-複数の文書を組み合わせないと解けない設問が必ず1つある。`,
+**数字（日付・料金・条件）**が正解の根拠になることが多い。
+**複数の文書を組み合わせ**ないと解けない設問が必ず1つある。`,
     trickSteps: [
       '設問を先に全部読む',
       '各設問に関係する文書を特定する（チラシ？フォーム？メール？）',
-      '複数文書を組み合わせる設問を最後に読む（一番難しいので後回し）',
+      '**複数文書を組み合わせる設問**を最後に読む（一番難しいので後回し）',
     ],
     example: {
       en: 'Leaflet says "open Mon-Fri". Form says "submitted on Saturday" → Q: Was the form submitted on time?',
@@ -140,12 +140,12 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
     points: 12,
     questionCount: 4,
     timeLimit: 300,
-    trick: `第1段落と最終段落を先に読む。登場人物の感情語（worried / relieved / disappointed / proud 等）を全てマーク。
-心情・行動の理由を問う設問の答えは、その感情語の前後に必ずある。`,
+    trick: `**第1段落と最終段落を先に読む。**登場人物の**感情語（worried / relieved / disappointed / proud 等）を全てマーク**。
+心情・行動の理由を問う設問の答えは、**その感情語の前後**に必ずある。`,
     trickSteps: [
-      '第1段落：誰が・どんな状況かをつかむ',
-      '最終段落：どう変わったか（解決・未解決）を確認',
-      '感情・心情を表す単語をマークしながら本文を読む',
+      '**第1段落**：誰が・どんな状況かをつかむ',
+      '**最終段落**：どう変わったか（解決・未解決）を確認',
+      '**感情・心情を表す単語をマーク**しながら本文を読む',
     ],
     example: {
       en: '"She had been nervous, but now she felt relieved."',
@@ -165,12 +165,12 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
     points: 16,
     questionCount: 4,
     timeLimit: 360,
-    trick: `スライドの空欄を先に全部確認。空欄のテーマが本文の何段落目かを予測してから読む。
-筆者の主張は最初か最後の段落、具体例は中間段落にある。
-スライドと本文の「対応」を探すパズルだ。`,
+    trick: `**スライドの空欄を先に全部確認。**空欄のテーマが本文の何段落目かを予測してから読む。
+筆者の主張は**最初か最後の段落**、具体例は中間段落にある。
+スライドと本文の「**対応**」を探すパズルだ。`,
     trickSteps: [
-      'スライドの空欄を先に全部読む（何を探すか確認）',
-      '各空欄に対応する本文の段落を特定する',
+      '**スライドの空欄を先に全部読む**（何を探すか確認）',
+      '各空欄に**対応する本文の段落を特定**する',
       '段落の最初の文だけ読んで、空欄に合うかを確認する',
     ],
     example: {
@@ -191,12 +191,12 @@ export const BOSS_CONFIGS: Record<string, BossConfig> = {
     points: 17,
     questionCount: 4,
     timeLimit: 420,
-    trick: `ステップを飛ばさない。①意見を読む→②立場を選ぶ→③その立場を支持する意見を2つ探す→④追加資料でアウトラインを完成させる。
-アウトラインの答えは「選んだ立場の論理的帰結」。感情的に正しそうな選択肢が罠。`,
+    trick: `**ステップを飛ばさない。**①意見を読む→②**立場を選ぶ**→③その立場を支持する**意見を2つ探す**→④追加資料でアウトラインを完成させる。
+アウトラインの答えは「**選んだ立場の論理的帰結**」。感情的に正しそうな選択肢が罠。`,
     trickSteps: [
-      '各意見を読んで「賛成派・反対派」をメモする（30秒）',
-      '選んだ立場を支持する意見2つの「共通点」を探す',
-      '追加資料はアウトラインの空欄に直接対応する部分だけを読む',
+      '各意見を読んで「**賛成派・反対派**」をメモする（30秒）',
+      '選んだ立場を支持する意見2つの「**共通点**」を探す',
+      '追加資料は**アウトラインの空欄に直接対応する部分だけ**を読む',
     ],
     example: {
       en: 'Step 2: "Jack and Tamara both support accepting technology in sports."',
