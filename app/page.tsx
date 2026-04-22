@@ -17,11 +17,12 @@ async function getPageData() {
   if (!user) redirect('/login')
   if (!user.user_metadata?.onboarding_done) redirect('/onboarding')
 
-  const [masteryResult, profileResult, sessionResult, difficultyResult] = await Promise.all([
+  const [masteryResult, profileResult, sessionResult, difficultyResult, lessonResult] = await Promise.all([
     supabase.from('mastery').select('*').eq('user_id', user.id),
     supabase.from('profiles').select('exam_date, study_started_at').eq('user_id', user.id).single(),
     supabase.from('sessions').select('result').eq('user_id', user.id),
     supabase.from('difficulty_state').select('boss_type, current_difficulty').eq('user_id', user.id),
+    supabase.from('lesson_progress').select('lesson_id, understood').eq('user_id', user.id),
   ])
 
   const masteryMap = new Map(
@@ -38,17 +39,25 @@ async function getPageData() {
   const accuracyPct = total > 0 ? Math.round((cleared / total) * 100) : 0
   const clearedBossCount = [...masteryMap.values()].filter((v) => v === 'cleared').length
 
+  const lessonRows = lessonResult.data ?? []
+  const understoodIds = new Set(lessonRows.filter(r => r.understood).map(r => r.lesson_id))
+  const failedIds = new Set(lessonRows.filter(r => !r.understood).map(r => r.lesson_id))
+  const lessonDone = understoodIds.size
+  const lessonNeedsReview = [...failedIds].some(id => !understoodIds.has(id))
+
   return {
     masteryMap,
     levelMap,
     examDate: profileResult.data?.exam_date ?? null,
     studyStartedAt: profileResult.data?.study_started_at ?? user.created_at,
     stats: { accuracyPct, clearedBossCount, totalMinutes: 0, streakDays: 1 },
+    lessonDone,
+    lessonNeedsReview,
   }
 }
 
 export default async function MapPage() {
-  const { masteryMap, levelMap, examDate, studyStartedAt, stats } = await getPageData()
+  const { masteryMap, levelMap, examDate, studyStartedAt, stats, lessonDone, lessonNeedsReview } = await getPageData()
 
   const bosses = Object.values(BOSS_CONFIGS)
 
@@ -80,7 +89,7 @@ export default async function MapPage() {
           <span style={{ fontFamily: 'var(--display)', fontStyle: 'italic', fontSize: 18, color: 'var(--accent-2)' }}>→</span>
         </Link>
 
-        <LessonEntryCard done={0} total={LESSON_CATEGORIES.reduce((s, c) => s + c.cards.length, 0)} needsReview={false} />
+        <LessonEntryCard done={lessonDone} total={LESSON_CATEGORIES.reduce((s, c) => s + c.cards.length, 0)} needsReview={lessonNeedsReview} />
 
         <div>
           {bosses.map((boss) => {
