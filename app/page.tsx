@@ -49,7 +49,29 @@ export default async function MapPage() {
       <main className="flex-1">
         <ProgressBanner stats={stats} />
 
-        <div style={{ borderTop: '1px solid var(--rule)' }}>
+        {/* about strip */}
+        <Link
+          href="/about"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '14px 20px',
+            borderTop: '1px solid var(--rule)',
+            borderBottom: '1px solid var(--rule)',
+            background: 'var(--ink)',
+            color: 'var(--paper)',
+            textDecoration: 'none',
+          }}
+        >
+          <div>
+            <div style={{ fontFamily: 'var(--mono)', fontSize: 9, color: 'var(--ink-4)', letterSpacing: '0.06em' }}>ABOUT THIS APP</div>
+            <div style={{ fontFamily: 'var(--sans)', fontSize: 13, fontWeight: 500, marginTop: 3 }}>共通テスト英語の攻略データを見る</div>
+          </div>
+          <span style={{ fontFamily: 'var(--display)', fontStyle: 'italic', fontSize: 18, color: 'var(--accent-2)' }}>→</span>
+        </Link>
+
+        <div>
           {bosses.map((boss) => {
             const raw = masteryMap.get(boss.type)
             const status =
@@ -69,16 +91,6 @@ export default async function MapPage() {
               />
             )
           })}
-        </div>
-
-        {/* about footer link */}
-        <div style={{ borderTop: '1px solid var(--rule-soft)', padding: '16px 20px', display: 'flex', justifyContent: 'center' }}>
-          <Link
-            href="/about"
-            style={{ fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--ink-3)', textDecoration: 'none', letterSpacing: '0.05em' }}
-          >
-            共通テストについて → ABOUT
-          </Link>
         </div>
       </main>
     </>
