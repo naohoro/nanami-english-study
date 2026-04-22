@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { BOSS_CONFIGS } from '@/lib/boss-data'
 import { HybridBar } from '@/components/map/HybridBar'
@@ -49,7 +50,7 @@ export default async function MapPage() {
         <ProgressBanner stats={stats} />
 
         <div style={{ borderTop: '1px solid var(--rule)' }}>
-          {bosses.map((boss, i) => {
+          {bosses.map((boss) => {
             const raw = masteryMap.get(boss.type)
             const status =
               raw === 'cleared' ? 'cleared'
@@ -68,6 +69,16 @@ export default async function MapPage() {
               />
             )
           })}
+        </div>
+
+        {/* about footer link */}
+        <div style={{ borderTop: '1px solid var(--rule-soft)', padding: '16px 20px', display: 'flex', justifyContent: 'center' }}>
+          <Link
+            href="/about"
+            style={{ fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--ink-3)', textDecoration: 'none', letterSpacing: '0.05em' }}
+          >
+            共通テストについて → ABOUT
+          </Link>
         </div>
       </main>
     </>
