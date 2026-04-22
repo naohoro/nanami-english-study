@@ -46,7 +46,16 @@ export default function OnboardingPage() {
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       )
-      await supabase.auth.updateUser({ data: { onboarding_done: true } })
+      const { data: { user } } = await supabase.auth.getUser()
+      await Promise.all([
+        supabase.auth.updateUser({ data: { onboarding_done: true } }),
+        user && supabase.from('profiles').upsert({
+          user_id: user.id,
+          exam_date: '2027-01-16',
+          study_started_at: new Date().toISOString(),
+          onboarding_done: true,
+        }, { onConflict: 'user_id' }),
+      ])
     } finally {
       router.push('/')
     }
