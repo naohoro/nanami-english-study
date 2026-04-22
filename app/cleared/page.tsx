@@ -26,6 +26,13 @@ function ClearedContent() {
           label="他の問題に挑戦する →"
           onClick={() => router.push('/')}
         />
+        <button
+          onClick={() => router.push(`/boss/${bossType}?rationale=open`)}
+          className="w-full text-sm font-bold py-2.5 px-4 rounded-xl active:opacity-60 flex items-center justify-center gap-2"
+          style={{ background: '#1A1A1A', color: '#FFD700' }}
+        >
+          ⚡ この問題の裏技を確認する
+        </button>
         <BottomButton
           label="もう一度やってみる"
           onClick={() => router.push(`/boss/${bossType}`)}

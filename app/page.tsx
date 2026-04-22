@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { BOSS_CONFIGS } from '@/lib/boss-data'
 import { MapList } from '@/components/map/MapList'
@@ -52,6 +53,18 @@ export default async function MapPage() {
         <h1 className="text-2xl font-black" style={{ color: '#1A1A1A' }}>どの問題に取り組む？</h1>
         <p className="text-sm mt-1" style={{ color: '#787878' }}>第1問〜第8問・全8種類</p>
       </div>
+
+      <Link
+        href="/about"
+        className="flex items-center justify-between rounded-xl px-4 py-3 active:opacity-70"
+        style={{ background: '#1A1A1A', color: '#FFD700' }}
+      >
+        <div className="flex items-center gap-2">
+          <span className="text-base">⚡</span>
+          <span className="text-sm font-bold">ガチの裏技情報</span>
+        </div>
+        <span className="text-xs" style={{ color: '#888' }}>共通テストの攻略データを見る →</span>
+      </Link>
 
       <ProgressBanner masteries={masteries} />
 
