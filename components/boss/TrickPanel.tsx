@@ -4,29 +4,36 @@ interface TrickPanelProps {
   example?: { en: string; ja: string }
 }
 
+const ROMAN = ['i', 'ii', 'iii', 'iv', 'v']
+
 export function TrickPanel({ trick, steps, example }: TrickPanelProps) {
   return (
-    <div className="space-y-4">
-      <div className="rounded-2xl p-4" style={{ background: 'var(--gold-light)', border: '1px solid #E8D5A3' }}>
-        <p className="text-xs font-bold mb-2" style={{ color: 'var(--gold)' }}>💡 コツ</p>
-        <p className="text-sm leading-relaxed" style={{ color: '#1A1A1A' }}>{trick}</p>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+      {/* trick */}
+      <div style={{ padding: '18px 0 20px', borderBottom: '1px solid var(--rule)' }}>
+        <div className="mono-kicker" style={{ marginBottom: 10, color: 'var(--accent)' }}>THE TRICK</div>
+        <p className="font-mincho" style={{ fontSize: 15, lineHeight: 1.85, color: 'var(--ink)' }}>{trick}</p>
       </div>
 
-      <div className="rounded-2xl p-4 space-y-3" style={{ background: '#fff', border: '1px solid var(--border)' }}>
-        <p className="text-xs font-bold" style={{ color: '#787878' }}>3ステップで解く</p>
-        {steps.map((step, i) => (
-          <div key={i} className="flex gap-3 items-start">
-            <span className="text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 text-white" style={{ background: 'var(--burgundy)' }}>{i + 1}</span>
-            <p className="text-sm" style={{ color: '#1A1A1A' }}>{step}</p>
-          </div>
-        ))}
+      {/* steps */}
+      <div style={{ padding: '20px 0', borderBottom: example ? '1px solid var(--rule)' : undefined }}>
+        <div className="mono-kicker" style={{ marginBottom: 14 }}>HOW TO SOLVE</div>
+        <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 0 }}>
+          {steps.map((step, i) => (
+            <li key={i} style={{ display: 'grid', gridTemplateColumns: '28px 1fr', gap: 8, padding: '10px 0', borderBottom: i < steps.length - 1 ? '1px solid var(--rule-soft)' : undefined }}>
+              <span className="display-italic" style={{ fontSize: 16, color: 'var(--accent)', paddingTop: 1 }}>{ROMAN[i]}.</span>
+              <p className="font-mincho" style={{ fontSize: 14, lineHeight: 1.7, color: 'var(--ink-2)', margin: 0 }}>{step}</p>
+            </li>
+          ))}
+        </ol>
       </div>
 
+      {/* example */}
       {example && (
-        <div className="rounded-2xl p-4 space-y-2" style={{ background: 'var(--burgundy-light)', border: '1px solid #D4A0B8' }}>
-          <p className="text-xs font-bold" style={{ color: 'var(--burgundy)' }}>📖 例</p>
-          <p className="text-xs leading-relaxed font-mono" style={{ color: '#3A3A3A' }}>{example.en}</p>
-          <p className="text-xs leading-relaxed" style={{ color: '#787878' }}>→ {example.ja}</p>
+        <div style={{ padding: '20px 0' }}>
+          <div className="mono-kicker" style={{ marginBottom: 12 }}>EXAMPLE</div>
+          <p className="passage-english" style={{ fontSize: 14, color: 'var(--ink)', lineHeight: 1.7 }}>{example.en}</p>
+          <p className="font-mincho" style={{ marginTop: 8, fontSize: 13, color: 'var(--ink-3)', lineHeight: 1.65 }}>→ {example.ja}</p>
         </div>
       )}
     </div>
