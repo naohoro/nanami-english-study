@@ -6,6 +6,18 @@ import { LESSON_CATEGORIES } from '@/lib/lesson-data'
 import type { LessonCard } from '@/lib/lesson-data'
 import { AiTeacherChat } from '@/components/ai-teacher/AiTeacherChat'
 
+function withUnderline(text: string, word: string) {
+  const idx = text.indexOf(word)
+  if (idx === -1) return <>{text}</>
+  return (
+    <>
+      {text.slice(0, idx)}
+      <span style={{ borderBottom: '1.5px solid currentColor', paddingBottom: 1 }}>{word}</span>
+      {text.slice(idx + word.length)}
+    </>
+  )
+}
+
 export default function LessonCardPage() {
   const { categoryId } = useParams<{ categoryId: string }>()
   const router = useRouter()
@@ -189,11 +201,14 @@ export default function LessonCardPage() {
           <div style={{ padding: '16px 20px 6px', fontFamily: 'var(--mono)', fontSize: 9.5, color: 'var(--ink-3)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             文の中での使われ方
           </div>
-          <div style={{ padding: '0 20px', fontFamily: 'Georgia, serif', fontSize: 15, lineHeight: 1.6, color: 'var(--ink)' }}>
-            {card.exampleEn}
+          <div style={{ padding: '0 20px', fontFamily: 'Georgia, serif', fontSize: 16, lineHeight: 1.6, color: 'var(--ink)' }}>
+            {withUnderline(card.exampleEn, card.word)}
           </div>
-          <div style={{ padding: '6px 20px 18px', fontFamily: 'var(--display)', fontStyle: 'italic', fontSize: 13, color: 'var(--ink-3)' }}>
-            → {card.exampleJa}
+          <div style={{ padding: '4px 20px 18px', display: 'flex', gap: 8, alignItems: 'baseline' }}>
+            <span style={{ fontFamily: 'var(--mono)', fontSize: 9, color: 'var(--ink-4)', letterSpacing: '0.04em', flexShrink: 0 }}>訳</span>
+            <span style={{ fontFamily: 'var(--display)', fontSize: 16, color: 'var(--ink-3)', lineHeight: 1.55 }}>
+              {withUnderline(card.exampleJa, card.meaningJa.split('・')[0])}
+            </span>
           </div>
 
           {/* Boss link box */}
