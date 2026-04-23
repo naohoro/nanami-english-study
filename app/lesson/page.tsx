@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { LESSON_CATEGORIES, LESSON_TOTAL } from '@/lib/lesson-data'
 import { AiTeacherChat } from '@/components/ai-teacher/AiTeacherChat'
+import { LevelAccordion } from '@/components/lesson/LevelAccordion'
 
 async function getLessonProgress(userId: string) {
   const supabase = await createServerSupabaseClient()
@@ -109,14 +110,9 @@ export default async function LessonPage() {
 
         if (isCompleted) {
           return (
-            <div key={lv} style={{ opacity: 0.5 }}>
-              <div className="hy-section">
-                <div className="idx" style={{ fontStyle: 'normal', fontSize: 13 }}>✓</div>
-                <div className="t">Level {lv} — 完了</div>
-                <div className="meta">{stat.done}/{stat.total}</div>
-              </div>
+            <LevelAccordion key={lv} level={lv} done={stat.done} total={stat.total}>
               {cats.map(c => <CategoryRow key={c.id} cat={c} isWeak={false} />)}
-            </div>
+            </LevelAccordion>
           )
         }
 
