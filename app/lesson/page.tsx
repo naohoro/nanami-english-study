@@ -109,10 +109,13 @@ export default async function LessonPage() {
 
         if (isCompleted) {
           return (
-            <div key={lv} className="hy-section" style={{ opacity: 0.45 }}>
-              <div className="idx" style={{ fontStyle: 'normal', fontSize: 13 }}>✓</div>
-              <div className="t">Level {lv} — 完了</div>
-              <div className="meta">{stat.done}/{stat.total}</div>
+            <div key={lv} style={{ opacity: 0.5 }}>
+              <div className="hy-section">
+                <div className="idx" style={{ fontStyle: 'normal', fontSize: 13 }}>✓</div>
+                <div className="t">Level {lv} — 完了</div>
+                <div className="meta">{stat.done}/{stat.total}</div>
+              </div>
+              {cats.map(c => <CategoryRow key={c.id} cat={c} isWeak={false} />)}
             </div>
           )
         }
