@@ -232,8 +232,20 @@ export default function LessonCardPage() {
             </span>
           </div>
 
+          {/* Nuance box */}
+          {card.nuance && (
+            <div style={{ margin: '14px 20px 0', background: '#F7F4EE', border: '1px solid var(--rule-soft)', padding: '10px 14px' }}>
+              <div style={{ fontFamily: 'var(--mono)', fontSize: 9, color: 'var(--ink-3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 5 }}>
+                + 補足
+              </div>
+              <div style={{ fontFamily: 'var(--display)', fontSize: 13, lineHeight: 1.6, color: 'var(--ink-2)' }}>
+                {card.nuance}
+              </div>
+            </div>
+          )}
+
           {/* Boss link box */}
-          <div style={{ margin: '0 20px', background: 'var(--surface)', border: '1px solid var(--rule-soft)', padding: '12px 14px' }}>
+          <div style={{ margin: '14px 20px 0', background: 'var(--surface)', border: '1px solid var(--rule-soft)', padding: '12px 14px' }}>
             <div style={{ fontFamily: 'var(--mono)', fontSize: 9.5, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>
               {card.bossWhere}
             </div>

@@ -200,10 +200,10 @@ function CategoryRow({ cat, isWeak }: {
         {cat.words}
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, alignItems: 'center' }}>
-        <div style={{ height: 2, background: 'var(--ink-4)', opacity: 0.4, position: 'relative' }}>
+        <div style={{ height: 2, background: 'var(--ink-4)', opacity: 0.3, position: 'relative', borderRadius: 1 }}>
           <div style={{
             position: 'absolute', inset: 0, width: `${p}%`,
-            background: isWeak ? 'var(--accent)' : 'var(--ink)',
+            background: 'var(--accent)', borderRadius: 1,
           }} />
         </div>
         {isWeak && (

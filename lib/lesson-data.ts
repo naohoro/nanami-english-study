@@ -18,6 +18,7 @@ export interface LessonCard {
   exampleJa: string
   bossHint: string
   bossWhere: string
+  nuance?: string
   nextWord?: string
   nextTeaser?: string
 }
@@ -307,6 +308,7 @@ export const LESSON_CATEGORIES: LessonCategory[] = [
         exampleJa: '「昨年、訪問者数が大幅に増加した。」',
         bossHint: 'グラフや統計の変化を読み取る問題でよく登場する。「大きな変化」を示す目印。',
         bossWhere: '第2問・第4問に出やすい',
+        nuance: '形容詞 significant は「重要な・意義深い」の意味もある（例：a significant finding＝重要な発見）。副詞 significantly は「かなり」と「重要な意味で」の両方のニュアンスを持つ。',
         nextWord: 'gradually',
         nextTeaser: 'significantly とは逆に、ゆっくりした変化を表す言葉。',
       },
@@ -492,6 +494,7 @@ export const LESSON_CATEGORIES: LessonCategory[] = [
         exampleJa: '「チケットは事前に予約することをお勧めします。」',
         bossHint: '「この文書が伝えたいことは何か」という問題で重要な動詞。',
         bossWhere: '第1問・第2問に出やすい',
+        nuance: '動詞として使う場合、後ろには動名詞（〜ing）が来る。× recommend to do → ○ recommend doing。また「推薦状」は a letter of recommendation と名詞形になる。',
         nextWord: 'warn',
         nextTeaser: '危険や注意を伝える動詞。掲示や案内文でよく登場する。',
       },
@@ -552,6 +555,7 @@ export const LESSON_CATEGORIES: LessonCategory[] = [
         ],
         meaningJa: '心配している・懸念している',
         core: '問題や状況に対して不安を感じている状態。worried より少しフォーマルなニュアンス。',
+        nuance: '「concerned with 〜」は「〜に関係している・〜を扱っている」の意味になる（例：This report is concerned with energy policy.＝このレポートはエネルギー政策を扱っている）。心配とはまったく別の使い方なので注意。',
         exampleEn: '"She was concerned about her friend\'s health."',
         exampleJa: '「彼女は友人の健康を心配していた。」',
         bossHint: '登場人物の感情を問う問題でよく登場する。「何を心配しているか」を文脈から読み取ることが重要。',
@@ -609,6 +613,7 @@ export const LESSON_CATEGORIES: LessonCategory[] = [
         ],
         meaningJa: '確信している・納得している',
         core: '十分な根拠を持って強く信じている状態。疑いのない信念を表す。',
+        nuance: '動詞 convince は「説得する」の意味。She convinced me to try it.（彼女は私を説得して試させた）。convinced は「説得された結果、確信している状態」でもある。convince A of B（AにBを納得させる）の形も頻出。',
         exampleEn: '"He was convinced that hard work would lead to success."',
         exampleJa: '「彼は努力が成功につながると確信していた。」',
         bossHint: '筆者や登場人物が「なぜその意見を持つか」を問う問題でよく登場する。',
