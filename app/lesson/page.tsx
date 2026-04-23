@@ -81,8 +81,8 @@ export default async function LessonPage() {
           文法用語は使わない。<b>意味</b>と<b>役割</b>で覚える語彙と表現。<br />
           全体の進捗 <b>{pct}%</b>{weakCount > 0 ? <> · 弱点 <b>{weakCount} 領域</b></> : null}。
         </div>
-        <div style={{ marginTop: 18, height: 3, background: 'var(--ink-4)', opacity: 0.45, position: 'relative' }}>
-          <div style={{ position: 'absolute', inset: 0, width: `${pct}%`, background: 'var(--ink)' }} />
+        <div style={{ marginTop: 18, height: 4, background: 'var(--ink-4)', opacity: 0.3, position: 'relative', borderRadius: 2 }}>
+          <div style={{ position: 'absolute', inset: 0, width: `${pct}%`, background: 'var(--accent)', borderRadius: 2 }} />
         </div>
       </div>
 
