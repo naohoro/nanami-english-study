@@ -45,6 +45,20 @@ export default async function LessonPage() {
   const maxLevel = Math.max(...categoryStats.map(c => c.level ?? 1))
   const levels = Array.from({ length: maxLevel }, (_, i) => i + 1)
 
+  // Per-level completion stats for unlock system
+  const levelStatMap = new Map<number, { done: number; total: number; isComplete: boolean }>()
+  for (const lv of levels) {
+    const cats = categoryStats.filter(c => (c.level ?? 1) === lv)
+    const total = cats.reduce((s, c) => s + c.cards.length, 0)
+    const done = cats.reduce((s, c) => s + c.done, 0)
+    levelStatMap.set(lv, { done, total, isComplete: total > 0 && done >= total })
+  }
+  // Active level = lowest level with incomplete cards
+  let activeLv = maxLevel
+  for (const lv of levels) {
+    if (!levelStatMap.get(lv)!.isComplete) { activeLv = lv; break }
+  }
+
   return (
     <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
       {/* Bar */}
@@ -85,18 +99,42 @@ export default async function LessonPage() {
         </>
       )}
 
-      {/* Level sections */}
+      {/* Level sections — unlock system */}
       {levels.map(lv => {
+        const stat = levelStatMap.get(lv)!
         const cats = categoryStats.filter(c => (c.level ?? 1) === lv && !c.isWeak)
+        const isActive = lv === activeLv
+        const isCompleted = stat.isComplete && !isActive
+        const isLocked = lv > activeLv
+
+        if (isCompleted) {
+          return (
+            <div key={lv} className="hy-section" style={{ opacity: 0.45 }}>
+              <div className="idx" style={{ fontStyle: 'normal', fontSize: 13 }}>✓</div>
+              <div className="t">Level {lv} — 完了</div>
+              <div className="meta">{stat.done}/{stat.total}</div>
+            </div>
+          )
+        }
+
+        if (isLocked) {
+          return (
+            <div key={lv} className="hy-section" style={{ opacity: 0.25 }}>
+              <div className="idx" style={{ fontStyle: 'normal' }}>—</div>
+              <div className="t">Level {lv}</div>
+              <div className="meta">LOCKED</div>
+            </div>
+          )
+        }
+
+        // Active level — show categories
         if (cats.length === 0) return null
-        const lvDone = cats.reduce((s, c) => s + c.done, 0)
-        const lvTotal = cats.reduce((s, c) => s + c.cards.length, 0)
         return (
           <div key={lv}>
             <div className="hy-section">
               <div className="idx" style={{ fontStyle: 'normal' }}>Lv.{lv}</div>
               <div className="t">Level {lv}</div>
-              <div className="meta">{lvDone}/{lvTotal}</div>
+              <div className="meta">{stat.done}/{stat.total}</div>
             </div>
             {cats.map(c => (
               <CategoryRow key={c.id} cat={c} isWeak={false} />
