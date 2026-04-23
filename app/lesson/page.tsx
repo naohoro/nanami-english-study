@@ -82,7 +82,7 @@ export default async function LessonPage() {
           全体の進捗 <b>{pct}%</b>{weakCount > 0 ? <> · 弱点 <b>{weakCount} 領域</b></> : null}。
         </div>
         <div style={{ marginTop: 18, height: 4, background: 'var(--ink-4)', opacity: 0.3, position: 'relative', borderRadius: 2 }}>
-          <div style={{ position: 'absolute', inset: 0, width: `${pct}%`, background: 'var(--accent)', borderRadius: 2 }} />
+          <div style={{ position: 'absolute', inset: 0, width: `${pct}%`, background: '#8B1A2E', borderRadius: 2 }} />
         </div>
       </div>
 
@@ -203,7 +203,7 @@ function CategoryRow({ cat, isWeak }: {
         <div style={{ height: 2, background: 'var(--ink-4)', opacity: 0.3, position: 'relative', borderRadius: 1 }}>
           <div style={{
             position: 'absolute', inset: 0, width: `${p}%`,
-            background: 'var(--accent)', borderRadius: 1,
+            background: '#8B1A2E', borderRadius: 1,
           }} />
         </div>
         {isWeak && (
