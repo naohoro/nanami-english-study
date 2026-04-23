@@ -89,10 +89,37 @@ export function AiTeacherChat({ context }: AiTeacherChatProps) {
     <div style={{
       borderRadius: 16,
       overflow: 'hidden',
-      border: '1px solid rgba(0,0,0,0.12)',
-      boxShadow: '0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06)',
-      background: '#fff',
+      boxShadow: '0 8px 32px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08)',
+      background: '#FAFAF7',
     }}>
+      {/* ダークヘッダー */}
+      <div style={{
+        background: '#1A1A1A',
+        padding: '10px 16px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}>
+        <span style={{ color: '#F5DFA0', fontFamily: 'var(--sans)', fontSize: 13, fontWeight: 600, letterSpacing: '0.03em' }}>
+          ✦ AI先生
+        </span>
+        <button
+          onClick={handleClose}
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: 11,
+            color: 'rgba(255,255,255,0.45)',
+            fontFamily: 'var(--sans)',
+            padding: 0,
+            letterSpacing: '0.02em',
+          }}
+        >
+          ▲ 閉じる
+        </button>
+      </div>
+
       {/* メッセージ履歴（あるときだけ表示） */}
       {hasMessages && (
         <div style={{ padding: '16px 16px 0', display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 240, overflowY: 'auto' }}>
@@ -102,7 +129,7 @@ export function AiTeacherChat({ context }: AiTeacherChatProps) {
                 maxWidth: '85%',
                 padding: '8px 12px',
                 borderRadius: msg.role === 'user' ? '14px 14px 3px 14px' : '14px 14px 14px 3px',
-                background: msg.role === 'user' ? '#B5EA4A' : '#F4F4F4',
+                background: msg.role === 'user' ? '#B5EA4A' : '#F0F0EC',
                 color: '#1A1A1A',
                 fontFamily: 'var(--sans)',
                 fontSize: 13,
@@ -117,7 +144,7 @@ export function AiTeacherChat({ context }: AiTeacherChatProps) {
               <div style={{
                 padding: '8px 12px',
                 borderRadius: '14px 14px 14px 3px',
-                background: '#F4F4F4',
+                background: '#F0F0EC',
                 color: 'rgba(0,0,0,0.35)',
                 fontFamily: 'var(--sans)',
                 fontSize: 13,
@@ -130,12 +157,12 @@ export function AiTeacherChat({ context }: AiTeacherChatProps) {
         </div>
       )}
 
-      {/* 入力エリア — Claude風 */}
-      <div style={{ padding: '10px 12px 12px' }}>
+      {/* 入力エリア */}
+      <div style={{ padding: '10px 12px 12px', borderTop: hasMessages ? '1px solid rgba(0,0,0,0.07)' : 'none', marginTop: hasMessages ? 10 : 0 }}>
         <div style={{
-          background: '#F9F9F9',
+          background: '#F5F5F0',
           borderRadius: 12,
-          border: '1px solid rgba(0,0,0,0.09)',
+          border: '1px solid rgba(0,0,0,0.08)',
           padding: '10px 12px 8px',
         }}>
           <input
@@ -154,23 +181,10 @@ export function AiTeacherChat({ context }: AiTeacherChatProps) {
               color: '#1A1A1A',
               fontFamily: 'var(--sans)',
               lineHeight: 1.5,
+              caretColor: '#1A1A1A',
             }}
           />
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 6 }}>
-            <button
-              onClick={handleClose}
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: 11,
-                color: 'rgba(0,0,0,0.35)',
-                fontFamily: 'var(--sans)',
-                padding: 0,
-              }}
-            >
-              閉じる
-            </button>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: 6 }}>
             <button
               onClick={handleSend}
               disabled={!input.trim() || loading}
