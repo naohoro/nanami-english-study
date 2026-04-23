@@ -27,6 +27,7 @@ export interface LessonCategory {
   bossType: BossType
   title: string
   words: string
+  level: number
   cards: LessonCard[]
 }
 
@@ -36,6 +37,7 @@ export const LESSON_CATEGORIES: LessonCategory[] = [
     bossType: 'short_text',
     title: 'でも・しかし系の言葉',
     words: 'However, Yet, Although, Nevertheless',
+    level: 1,
     cards: [
       {
         id: 'but-1',
@@ -99,6 +101,7 @@ export const LESSON_CATEGORIES: LessonCategory[] = [
     bossType: 'short_text',
     title: 'だから・なので系の言葉',
     words: 'Therefore, Thus, As a result, Hence',
+    level: 1,
     cards: [
       {
         id: 'so-1',
@@ -124,6 +127,7 @@ export const LESSON_CATEGORIES: LessonCategory[] = [
     bossType: 'long_story',
     title: '気持ちを表す言葉',
     words: 'disappointed, relieved, frustrated, eager',
+    level: 1,
     cards: [
       {
         id: 'feel-1',
@@ -149,6 +153,7 @@ export const LESSON_CATEGORIES: LessonCategory[] = [
     bossType: 'essay_synthesis',
     title: 'どちらが〜かを表す言葉',
     words: 'rather than, as ... as, unlike, compared',
+    level: 1,
     cards: [
       {
         id: 'compare-1',
@@ -174,6 +179,7 @@ export const LESSON_CATEGORIES: LessonCategory[] = [
     bossType: 'survey_blog',
     title: '文書が何を伝えたいか',
     words: 'claim, suggest, argue, imply, conclude',
+    level: 1,
     cards: [
       {
         id: 'intent-1',

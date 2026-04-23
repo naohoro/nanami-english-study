@@ -44,7 +44,6 @@ export default function LessonCardPage() {
   const pick = (i: number) => {
     if (picked !== null) return
     setPicked(i)
-    setTimeout(() => setPhase('reveal'), 700)
   }
 
   const retry = () => {
@@ -173,6 +172,28 @@ export default function LessonCardPage() {
             )
           })}
           <div style={{ borderBottom: '1px solid var(--rule-soft)' }} />
+
+          {picked !== null && (() => {
+            const isCorrect = card.options[picked]?.correct ?? false
+            return (
+              <div style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                <div style={{
+                  fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '0.04em',
+                  color: isCorrect ? 'var(--ok)' : 'var(--accent)',
+                  fontWeight: 600,
+                }}>
+                  {isCorrect ? '正解' : '不正解 — 正しい答えを確認しよう'}
+                </div>
+                <button
+                  className="hy-btn"
+                  onClick={() => setPhase('reveal')}
+                  style={{ flexShrink: 0 }}
+                >
+                  解説を見る <span className="arr">→</span>
+                </button>
+              </div>
+            )
+          })()}
         </>
       )}
 

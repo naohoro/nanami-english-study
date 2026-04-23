@@ -40,7 +40,10 @@ export default async function LessonPage() {
   const weakCount = categoryStats.filter(c => c.isWeak).length
 
   const weak = categoryStats.filter(c => c.isWeak)
-  const rest = categoryStats.filter(c => !c.isWeak)
+
+  // Group non-weak categories by level
+  const maxLevel = Math.max(...categoryStats.map(c => c.level ?? 1))
+  const levels = Array.from({ length: maxLevel }, (_, i) => i + 1)
 
   return (
     <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -72,7 +75,7 @@ export default async function LessonPage() {
       {weak.length > 0 && (
         <>
           <div className="hy-section">
-            <div className="idx">§01</div>
+            <div className="idx">⚑</div>
             <div className="t">要復習 · 弱点領域</div>
             <div className="meta">{weak.length} cat.</div>
           </div>
@@ -82,15 +85,25 @@ export default async function LessonPage() {
         </>
       )}
 
-      {/* All categories */}
-      <div className="hy-section">
-        <div className="idx">{weak.length > 0 ? '§02' : '§01'}</div>
-        <div className="t">All categories</div>
-        <div className="meta">{rest.length} cat.</div>
-      </div>
-      {rest.map(c => (
-        <CategoryRow key={c.id} cat={c} isWeak={false} />
-      ))}
+      {/* Level sections */}
+      {levels.map(lv => {
+        const cats = categoryStats.filter(c => (c.level ?? 1) === lv && !c.isWeak)
+        if (cats.length === 0) return null
+        const lvDone = cats.reduce((s, c) => s + c.done, 0)
+        const lvTotal = cats.reduce((s, c) => s + c.cards.length, 0)
+        return (
+          <div key={lv}>
+            <div className="hy-section">
+              <div className="idx" style={{ fontStyle: 'normal' }}>Lv.{lv}</div>
+              <div className="t">Level {lv}</div>
+              <div className="meta">{lvDone}/{lvTotal}</div>
+            </div>
+            {cats.map(c => (
+              <CategoryRow key={c.id} cat={c} isWeak={false} />
+            ))}
+          </div>
+        )
+      })}
 
       <div style={{
         padding: '20px 20px 16px',
