@@ -3,7 +3,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import type { AiTeacherContext, ChatMessage } from '@/lib/types'
 
-const VALID_PAGE_TYPES = ['problem', 'map', 'general'] as const
+const VALID_PAGE_TYPES = ['problem', 'map', 'general', 'lesson'] as const
 
 function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
@@ -41,6 +41,13 @@ ${EXAM_FORMAT}`
 
   if (context.pageType === 'problem' && context.bossType) {
     return `${base}${logSection}\n\n今学習している大問: ${context.bossType}。この大問の解き方や特徴について質問に答えてください。`
+  }
+
+  if (context.pageType === 'lesson') {
+    const catInfo = context.categoryTitle
+      ? `「${context.categoryTitle}」カテゴリ`
+      : 'LESSSONカード'
+    return `${base}${logSection}\n\n今は${catInfo}で語彙・表現を学んでいます。単語の意味・使い方・共通テストでの出題パターンについて答えてください。`
   }
 
   return `${base}${logSection}\n\n今は共通テスト英語の学習マップページにいます。共通テスト英語全般について答えてください。`

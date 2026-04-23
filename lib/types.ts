@@ -119,13 +119,15 @@ export interface UserStats {
   studyDays: number
 }
 
-export type AiTeacherPageType = 'problem' | 'map' | 'general'
+export type AiTeacherPageType = 'problem' | 'map' | 'general' | 'lesson'
 
 export interface AiTeacherContext {
   pageType: AiTeacherPageType
   bossType?: BossType
   passageHtml?: string
   questionText?: string
+  categoryId?: string
+  categoryTitle?: string
 }
 
 export interface ChatMessage {

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { LESSON_CATEGORIES } from '@/lib/lesson-data'
 import type { LessonCard } from '@/lib/lesson-data'
+import { AiTeacherChat } from '@/components/ai-teacher/AiTeacherChat'
 
 export default function LessonCardPage() {
   const { categoryId } = useParams<{ categoryId: string }>()
@@ -256,6 +257,10 @@ export default function LessonCardPage() {
           </div>
         </div>
       )}
+
+      <div className="px-4 pb-6 mt-2">
+        <AiTeacherChat context={{ pageType: 'lesson', categoryId: cat.id, categoryTitle: cat.title }} />
+      </div>
     </main>
   )
 }

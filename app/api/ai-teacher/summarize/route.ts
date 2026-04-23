@@ -3,7 +3,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import type { AiTeacherContext, ChatMessage } from '@/lib/types'
 
-const VALID_PAGE_TYPES = ['problem', 'map', 'general'] as const
+const VALID_PAGE_TYPES = ['problem', 'map', 'general', 'lesson'] as const
 
 export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient()

@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { LESSON_CATEGORIES, LESSON_TOTAL } from '@/lib/lesson-data'
+import { AiTeacherChat } from '@/components/ai-teacher/AiTeacherChat'
 
 async function getLessonProgress(userId: string) {
   const supabase = await createServerSupabaseClient()
@@ -92,11 +93,15 @@ export default async function LessonPage() {
       ))}
 
       <div style={{
-        padding: '20px 20px 40px',
+        padding: '20px 20px 16px',
         fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--ink-3)', lineHeight: 1.6,
       }}>
         各カードは30秒。<br />
         苦手は自動で上に並びます。
+      </div>
+
+      <div className="px-4 pb-6">
+        <AiTeacherChat context={{ pageType: 'lesson' }} />
       </div>
     </main>
   )
