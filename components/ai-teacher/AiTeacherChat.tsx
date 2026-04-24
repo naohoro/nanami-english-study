@@ -15,7 +15,7 @@ export function AiTeacherChat({ context }: AiTeacherChatProps) {
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (open) bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (open) bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
   }, [messages, open])
 
   async function handleClose() {

@@ -40,8 +40,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body className={`${fraunces.variable} ${inter.variable} ${mono.variable} min-h-screen`}>
-        <div className="max-w-md md:max-w-xl lg:max-w-2xl mx-auto min-h-screen flex flex-col">
+      <body className={`${fraunces.variable} ${inter.variable} ${mono.variable} min-h-[100dvh]`}>
+        <div className="max-w-md md:max-w-xl lg:max-w-2xl mx-auto min-h-[100dvh] flex flex-col">
           {children}
         </div>
       </body>

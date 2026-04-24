@@ -54,6 +54,7 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.005em;
+  overscroll-behavior-y: contain;
 }
 
 /* ─── Japanese reading ────────────────────────────────────── */
