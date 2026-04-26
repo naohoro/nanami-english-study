@@ -5,7 +5,7 @@ import { LESSON_CATEGORIES, LESSON_TOTAL } from '@/lib/lesson-data'
 import { BOSS_CONFIGS } from '@/lib/boss-data'
 import type { BossConfig } from '@/lib/types'
 
-interface LessonRow { lesson_id: string; category_id: string; understood: boolean }
+interface LessonRow { lesson_id: string; category_id: string; understood: boolean; completed_at: string | null }
 interface SessionRow { boss_type: string; result: string; created_at: string | null; difficulty: number }
 interface MasteryRow { boss_type: string; status: string; cleared_at: string | null; attempt_count: number }
 
@@ -20,11 +20,8 @@ export default async function AdminPage() {
   const service = createServiceClient()
 
   const [lessonRes, sessionRes, masteryRes] = await Promise.all([
-    service.from('lesson_progress').select('lesson_id, category_id, understood'),
-    service
-      .from('sessions')
-      .select('boss_type, result, created_at, difficulty')
-      .order('created_at', { ascending: false }),
+    service.from('lesson_progress').select('lesson_id, category_id, understood, completed_at').order('completed_at', { ascending: false }),
+    service.from('sessions').select('boss_type, result, created_at, difficulty').order('created_at', { ascending: false }),
     service.from('mastery').select('boss_type, status, cleared_at, attempt_count'),
   ])
 
@@ -47,12 +44,35 @@ export default async function AdminPage() {
 
   const maxLevel = Math.max(...categoryStats.map(c => c.level ?? 1), 1)
 
+  // Weak cards: specific cards that were failed and not yet understood
+  const weakCards = LESSON_CATEGORIES.flatMap(cat =>
+    cat.cards
+      .filter(c => failedIds.has(c.id) && !understoodIds.has(c.id))
+      .map(c => ({ ...c, categoryTitle: cat.title, level: cat.level ?? 1 }))
+  )
+
+  // Study timing from lesson_progress.completed_at
+  const lastLessonAt = lessonRows[0]?.completed_at ?? null
+  const now = new Date()
+  const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+  const lessonThisWeek = lessonRows.filter(r => r.completed_at && new Date(r.completed_at) >= weekAgo).length
+  const studyDays = new Set(
+    lessonRows.filter(r => r.completed_at).map(r => new Date(r.completed_at!).toDateString())
+  ).size
+
   // Session stats
   const totalSessions = sessionRows.length
   const clearedSessions = sessionRows.filter(s => s.result === 'cleared').length
   const accuracyPct = totalSessions > 0 ? Math.round((clearedSessions / totalSessions) * 100) : 0
   const recentSessions = sessionRows.slice(0, 8)
-  const lastActivityAt = sessionRows[0]?.created_at ?? null
+
+  // Most recent activity (lesson or session)
+  const lastActivityAt = (() => {
+    const a = lastLessonAt ? new Date(lastLessonAt).getTime() : 0
+    const b = sessionRows[0]?.created_at ? new Date(sessionRows[0].created_at).getTime() : 0
+    const t = Math.max(a, b)
+    return t > 0 ? new Date(t).toISOString() : null
+  })()
 
   // Mastery stats
   const masteryMap = new Map(masteryRows.map(m => [m.boss_type, m]))
@@ -70,9 +90,7 @@ export default async function AdminPage() {
 
       {/* Hero */}
       <div className="hy-hero">
-        <div className="eye">
-          Admin Dashboard · 七海の学習ログ
-        </div>
+        <div className="eye">Admin Dashboard · 七海の学習ログ</div>
         <div className="hy-hd">
           学習<br /><em>状況。</em>
         </div>
@@ -80,14 +98,52 @@ export default async function AdminPage() {
           Lesson <b>{lessonDone}/{LESSON_TOTAL}</b> ({lessonPct}%) ·{' '}
           Boss <b>{clearedBosses}/{totalBosses}</b> 攻略 ·{' '}
           <b>{totalSessions}</b> セッション
-          {lastActivityAt && (
-            <> · 最終学習 <b>{fmtDate(lastActivityAt)}</b></>
-          )}
+          {lastActivityAt && <> · 最終学習 <b>{fmtDate(lastActivityAt)}</b></>}
         </div>
-        <div style={{ marginTop: 18, height: 4, background: 'rgba(0,0,0,0.1)', position: 'relative', borderRadius: 2 }}>
+        <div style={{ marginTop: 8, fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--ink-3)' }}>
+          累計学習日数 <b style={{ color: 'var(--ink)' }}>{studyDays}日</b> ·{' '}
+          今週のレッスン <b style={{ color: 'var(--ink)' }}>{lessonThisWeek}枚</b>
+        </div>
+        <div style={{ marginTop: 14, height: 4, background: 'rgba(0,0,0,0.1)', position: 'relative', borderRadius: 2 }}>
           <div style={{ position: 'absolute', inset: 0, width: `${lessonPct}%`, background: '#8B1A2E', borderRadius: 2 }} />
         </div>
       </div>
+
+      {/* ── 00 苦手カード ───────────────────────────── */}
+      {weakCards.length > 0 && (
+        <>
+          <div className="hy-section">
+            <div className="idx">⚑</div>
+            <div className="t">苦手カード</div>
+            <div className="meta">{weakCards.length} 件</div>
+          </div>
+          {weakCards.map(card => (
+            <div key={card.id} style={{
+              padding: '10px 20px',
+              borderBottom: '1px solid var(--rule-soft)',
+              display: 'grid',
+              gridTemplateColumns: '1fr auto',
+              gap: 12,
+              alignItems: 'center',
+            }}>
+              <div>
+                <div style={{ fontFamily: 'var(--sans)', fontSize: 14, color: 'var(--ink)', fontWeight: 500 }}>
+                  {card.word}
+                </div>
+                <div style={{ fontFamily: 'var(--display)', fontStyle: 'italic', fontSize: 12, color: 'var(--ink-3)', marginTop: 2 }}>
+                  {card.meaningJa}
+                </div>
+              </div>
+              <span style={{
+                fontFamily: 'var(--mono)', fontSize: 9, color: 'var(--ink-3)',
+                padding: '2px 6px', border: '1px solid var(--rule-soft)', whiteSpace: 'nowrap',
+              }}>
+                Lv.{card.level} · {card.categoryTitle}
+              </span>
+            </div>
+          ))}
+        </>
+      )}
 
       {/* ── 01 Lesson ───────────────────────────────── */}
       <div className="hy-section">
@@ -101,6 +157,9 @@ export default async function AdminPage() {
         if (cats.length === 0) return null
         const lvDone = cats.reduce((s, c) => s + c.done, 0)
         const lvTotal = cats.reduce((s, c) => s + c.cards.length, 0)
+        // Most recent completed_at for this level
+        const lvCardIds = new Set(cats.flatMap(c => c.cards.map(card => card.id)))
+        const lvLastAt = lessonRows.find(r => lvCardIds.has(r.lesson_id) && r.completed_at)?.completed_at ?? null
         return (
           <div key={lv}>
             <div style={{
@@ -114,7 +173,7 @@ export default async function AdminPage() {
                 LEVEL {lv}
               </span>
               <span style={{ fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--ink-3)' }}>
-                {lvDone}/{lvTotal}
+                {lvDone}/{lvTotal}{lvLastAt ? ` · ${fmtDate(lvLastAt)}` : ''}
               </span>
             </div>
             {cats.map(cat => {
