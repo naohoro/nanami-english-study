@@ -7,6 +7,7 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import type { BossType, GeneratedProblem } from '@/lib/types'
 import { AiTeacherChat } from '@/components/ai-teacher/AiTeacherChat'
+import { QuestionPreread } from '@/components/boss/QuestionPreread'
 
 type QState = { selected: 'A' | 'B' | 'C' | 'D' | null; revealed: boolean }
 type QTranslation = { questionText: string; choices: Record<string, string> }
@@ -20,6 +21,7 @@ export default function PracticePage() {
   const [problem, setProblem] = useState<GeneratedProblem | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [phase, setPhase] = useState<'prereading' | 'answering'>('prereading')
   const [qIdx, setQIdx] = useState(0) // 0-indexed
   const [qStates, setQStates] = useState<QState[]>([])
 
@@ -54,6 +56,16 @@ export default function PracticePage() {
   if (!boss) return <NotFound />
   if (loading) return <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><LoadingSpinner label="問題を読み込み中..." /></main>
   if (error || !problem) return <Err msg={error} onRetry={() => { setError(null); setLoading(true) }} />
+
+  if (phase === 'prereading') {
+    return (
+      <QuestionPreread
+        questions={problem.questions}
+        stepLabel="STEP 2 / 3 — PRACTICE"
+        onStart={() => setPhase('answering')}
+      />
+    )
+  }
 
   const q = problem.questions[qIdx]
   const qs = qStates[qIdx]

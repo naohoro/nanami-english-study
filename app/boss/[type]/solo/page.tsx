@@ -7,6 +7,7 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import type { BossType, GeneratedProblem } from '@/lib/types'
 import { AiTeacherChat } from '@/components/ai-teacher/AiTeacherChat'
+import { QuestionPreread } from '@/components/boss/QuestionPreread'
 
 export default function SoloPage() {
   const params = useParams()
@@ -15,6 +16,7 @@ export default function SoloPage() {
   const boss = BOSS_CONFIGS[bossType]
 
   const [problem, setProblem] = useState<GeneratedProblem | null>(null)
+  const [phase, setPhase] = useState<'prereading' | 'answering'>('prereading')
   const [selected, setSelected] = useState<Record<number, 'A' | 'B' | 'C' | 'D'>>({})
   const [qIdx, setQIdx] = useState(0)
   const [submitted, setSubmitted] = useState(false)
@@ -32,6 +34,16 @@ export default function SoloPage() {
 
   if (!boss) return <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><p style={{ color: 'var(--danger)' }}>問題タイプが見つかりません</p></main>
   if (!problem) return <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><LoadingSpinner label="準備中..." /></main>
+
+  if (phase === 'prereading') {
+    return (
+      <QuestionPreread
+        questions={problem.questions}
+        stepLabel="STEP 3 / 3 — SOLO"
+        onStart={() => setPhase('answering')}
+      />
+    )
+  }
 
   const questions = problem.questions
   const q = questions[qIdx]
