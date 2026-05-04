@@ -1,14 +1,17 @@
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { BOSS_CONFIGS } from '@/lib/boss-data'
+import { LESSON_TOTAL } from '@/lib/lesson-data'
 import { HybridBar } from '@/components/map/HybridBar'
-import { ProgressBanner } from '@/components/map/ProgressBanner'
+import { TodaySection } from '@/components/map/TodaySection'
 import { BossCard } from '@/components/map/BossCard'
 import { AiTeacherChat } from '@/components/ai-teacher/AiTeacherChat'
-import { LessonEntryCard } from '@/components/lesson/LessonEntryCard'
-import { LESSON_CATEGORIES } from '@/lib/lesson-data'
-import type { BossType, MasteryStatus } from '@/lib/types'
+import type { BossType } from '@/lib/types'
+
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? '').split(',').map(e => e.trim()).filter(Boolean)
+
+type LessonRow = { lesson_id: string; understood: boolean; completed_at: string | null }
+type Mission = { label: string; sub: string; href: string }
 
 async function getPageData() {
   const supabase = await createServerSupabaseClient()
@@ -16,83 +19,104 @@ async function getPageData() {
 
   if (!user) redirect('/login')
   if (!user.user_metadata?.onboarding_done) redirect('/onboarding')
+  if (ADMIN_EMAILS.includes(user.email ?? '')) redirect('/admin')
 
-  const [masteryResult, profileResult, sessionResult, difficultyResult, lessonResult] = await Promise.all([
+  const [masteryResult, profileResult, difficultyResult, lessonResult] = await Promise.all([
     supabase.from('mastery').select('*').eq('user_id', user.id),
     supabase.from('profiles').select('exam_date, study_started_at').eq('user_id', user.id).single(),
-    supabase.from('sessions').select('result').eq('user_id', user.id),
     supabase.from('difficulty_state').select('boss_type, current_difficulty').eq('user_id', user.id),
-    supabase.from('lesson_progress').select('lesson_id, understood').eq('user_id', user.id),
+    supabase.from('lesson_progress').select('lesson_id, understood, completed_at').eq('user_id', user.id),
   ])
 
   const masteryMap = new Map(
     masteryResult.data?.map((r: { boss_type: string; status: string }) => [r.boss_type, r.status]) ?? []
   )
-
   const levelMap = new Map(
     difficultyResult.data?.map((r: { boss_type: string; current_difficulty: number }) => [r.boss_type, r.current_difficulty]) ?? []
   )
 
-  const sessions = sessionResult.data ?? []
-  const cleared = sessions.filter((s: { result: string }) => s.result === 'cleared').length
-  const total = sessions.length
-  const accuracyPct = total > 0 ? Math.round((cleared / total) * 100) : 0
-  const clearedBossCount = [...masteryMap.values()].filter((v) => v === 'cleared').length
+  const lessonRows: LessonRow[] = lessonResult.data ?? []
 
-  const lessonRows = lessonResult.data ?? []
+  // 今日の枚数
+  const todayStr = new Date().toDateString()
+  const todayLessonCount = lessonRows.filter(r =>
+    r.completed_at && new Date(r.completed_at).toDateString() === todayStr
+  ).length
+
+  // 連続学習日数
+  const studyDays = [...new Set(
+    lessonRows.filter(r => r.completed_at).map(r => new Date(r.completed_at!).toDateString())
+  )].sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
+  const now = new Date()
+  let streakDays = 0
+  for (let i = 0; i < studyDays.length; i++) {
+    const expected = new Date(now)
+    expected.setDate(now.getDate() - i)
+    if (studyDays[i] === expected.toDateString()) streakDays++
+    else break
+  }
+
+  // 苦手カード
   const understoodIds = new Set(lessonRows.filter(r => r.understood).map(r => r.lesson_id))
   const failedIds = new Set(lessonRows.filter(r => !r.understood).map(r => r.lesson_id))
+  const weakCardCount = [...failedIds].filter(id => !understoodIds.has(id)).length
   const lessonDone = understoodIds.size
-  const lessonNeedsReview = [...failedIds].some(id => !understoodIds.has(id))
+
+  // 今日のミッション（優先度順に1つ）
+  let todayMission: Mission
+  if (weakCardCount > 0) {
+    todayMission = { label: '苦手カードを復習しよう', sub: `${weakCardCount}枚の苦手カードあり`, href: '/lesson' }
+  } else {
+    const inProgressBoss = Object.values(BOSS_CONFIGS).find(b => masteryMap.get(b.type) === 'in_progress')
+    if (inProgressBoss) {
+      todayMission = { label: `${inProgressBoss.name}を続けよう`, sub: '途中のボス戦', href: `/boss/${inProgressBoss.type}` }
+    } else if (lessonDone < LESSON_TOTAL) {
+      todayMission = { label: 'レッスンを続けよう', sub: `${lessonDone}/${LESSON_TOTAL}枚完了`, href: '/lesson' }
+    } else {
+      const nextBoss = Object.values(BOSS_CONFIGS).find(b => {
+        const s = masteryMap.get(b.type)
+        return !s || s === 'untouched'
+      })
+      todayMission = nextBoss
+        ? { label: `${nextBoss.name}に挑戦！`, sub: '次のボス戦', href: `/boss/${nextBoss.type}` }
+        : { label: 'レッスンを続けよう', sub: '', href: '/lesson' }
+    }
+  }
+
+  // ボスを status 優先でソート: in_progress → available → cleared
+  const statusOrder = (s: string | undefined) => s === 'in_progress' ? 0 : s === 'cleared' ? 2 : 1
+  const sortedBosses = Object.values(BOSS_CONFIGS).slice().sort((a, b) =>
+    statusOrder(masteryMap.get(a.type)) - statusOrder(masteryMap.get(b.type))
+  )
 
   return {
     masteryMap,
     levelMap,
     examDate: profileResult.data?.exam_date ?? null,
     studyStartedAt: profileResult.data?.study_started_at ?? user.created_at,
-    stats: { accuracyPct, clearedBossCount, totalMinutes: 0, streakDays: 1 },
-    lessonDone,
-    lessonNeedsReview,
+    todayLessonCount,
+    streakDays,
+    todayMission,
+    sortedBosses,
   }
 }
 
 export default async function MapPage() {
-  const { masteryMap, levelMap, examDate, studyStartedAt, stats, lessonDone, lessonNeedsReview } = await getPageData()
-
-  const bosses = Object.values(BOSS_CONFIGS)
+  const { masteryMap, levelMap, examDate, studyStartedAt, todayLessonCount, streakDays, todayMission, sortedBosses } =
+    await getPageData()
 
   return (
     <>
       <HybridBar studyStartedAt={studyStartedAt} examDate={examDate ?? undefined} />
       <main className="flex-1">
-        <ProgressBanner stats={stats} />
-
-        {/* about strip */}
-        <Link
-          href="/about"
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '14px 20px',
-            borderTop: '1px solid var(--rule)',
-            borderBottom: '1px solid var(--rule)',
-            background: 'var(--ink)',
-            color: 'var(--paper)',
-            textDecoration: 'none',
-          }}
-        >
-          <div>
-            <div style={{ fontFamily: 'var(--mono)', fontSize: 9, color: 'var(--ink-4)', letterSpacing: '0.06em' }}>ABOUT THIS APP</div>
-            <div style={{ fontFamily: 'var(--sans)', fontSize: 13, fontWeight: 500, marginTop: 3 }}>共通テスト英語の攻略データを見る</div>
-          </div>
-          <span style={{ fontFamily: 'var(--display)', fontStyle: 'italic', fontSize: 18, color: 'var(--accent-2)' }}>→</span>
-        </Link>
-
-        <LessonEntryCard done={lessonDone} total={LESSON_CATEGORIES.reduce((s, c) => s + c.cards.length, 0)} needsReview={lessonNeedsReview} />
+        <TodaySection
+          todayCount={todayLessonCount}
+          streakDays={streakDays}
+          mission={todayMission}
+        />
 
         <div>
-          {bosses.map((boss) => {
+          {sortedBosses.map((boss) => {
             const raw = masteryMap.get(boss.type)
             const status =
               raw === 'cleared' ? 'cleared'
@@ -114,7 +138,6 @@ export default async function MapPage() {
           })}
         </div>
 
-        {/* AI先生チャット — Map全般の質問用 */}
         <div className="px-4 pb-6 mt-2">
           <AiTeacherChat context={{ pageType: 'map' }} />
         </div>
